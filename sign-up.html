@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="signup" class="auth-body">
+  <main class="auth-layout">
+    <section class="auth-panel hero-panel">
+      <div class="brand auth-brand">
+        <div class="brand-icon">G</div>
+        <div>
+          <div class="brand-title-row">
+            <div class="brand-title">GenAI</div>
+            <div class="brand-beta">beta</div>
+          </div>
+          <div class="brand-meta">v0.26.2.0 &middot; cloud only</div>
+        </div>
+      </div>
+      <h1>Create an account for synced chat.</h1>
+      <p>New accounts start at 2.00 credits, sync profile data to Firebase, and unlock persistent history.</p>
+      <a class="subtle-button auth-link" href="index.html">Back to Home</a>
+    </section>
+
+    <section class="auth-panel form-panel">
+      <h2>Sign Up</h2>
+      <form class="auth-form" id="auth-form">
+        <div class="field">
+          <label for="auth-name">Display Name</label>
+          <input class="text-input" id="auth-name" type="text" required>
+        </div>
+        <div class="field">
+          <label for="auth-email">Email</label>
+          <input class="text-input" id="auth-email" type="email" required>
+        </div>
+        <div class="field">
+          <label for="auth-password">Password</label>
+          <input class="text-input" id="auth-password" type="password" required>
+        </div>
+        <button class="primary-button" id="auth-submit" type="submit">Create Account</button>
+      </form>
+      <button class="subtle-button full-width" id="auth-google" type="button">Use Google</button>
+      <p class="auth-switch">Already have an account? <a href="sign-in.html">Sign in</a></p>
+    </section>
+  </main>
+
+  <div class="toast-stack" id="toast-stack"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+  <script type="module" src="script.js"></script>
+</body>
+</html>
