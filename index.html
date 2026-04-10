@@ -625,6 +625,12 @@ function genId(){return Date.now().toString(36)+Math.random().toString(36).slice
 function getActive(){return sessions.find(s=>s.id===activeId)||null;}
 function titleFrom(t){return t.length>32?t.slice(0,32)+"â€¦":t;}
 function escHtml(t){return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function buildApiMessages(messages){
+  return (messages||[]).map(m=>({
+    role:m.role==="ai"?"assistant":m.role,
+    content:m.text||""
+  })).filter(m=>m.content.trim());
+}
 
 // â”€â”€ Status Dot â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function setDot(state,label){dot.className="dot "+state;dotLabel.textContent=label;}
@@ -864,7 +870,7 @@ function appendBubble(role,text,engine,thinking,anim=true){
   if(!anim)row.style.animation="none";
   const isUser=role==="user";
   const thinkTag=(!isUser&&thinking)?`<span class="thinking-tag">ThinkingMini V0.3</span>`:"";
-  const engBadge=!isUser&&engine?`<div class="eng-badge">${engine==="ollama"?"ðŸŸ¢ llama3":"âš¡ rule"}</div>`:"";
+  const engBadge=!isUser&&engine?`<div class="eng-badge">${engine==="ollama"?"cloud":"rule"}</div>`:"";
   row.innerHTML=`
     <div class="msg-av ${isUser?"user":"ai"}">${isUser?"Y":"G"}</div>
     <div class="msg-body">
@@ -905,7 +911,11 @@ async function send(){
     const res=await fetch(`${API}/chat`,{
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({prompt:text,model:activeModel}),
+      body:JSON.stringify({
+        prompt:text,
+        model:activeModel,
+        messages:buildApiMessages(s.messages)
+      }),
       signal:AbortSignal.timeout(90000)
     });
     removeTyping();

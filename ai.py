@@ -4,11 +4,9 @@ Routes prompts to the selected model and queries remote Ollama first.
 Falls back to lightweight rule handlers if Ollama is unavailable.
 """
 
-import json
 import os
 import sys
-import urllib.error
-import urllib.request
+from ollama import Client
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "models"))
@@ -28,10 +26,13 @@ def _normalize_ollama_base_url(raw_url):
 
 
 OLLAMA_BASE_URL = _normalize_ollama_base_url(os.getenv("OLLAMA_BASE_URL"))
-OLLAMA_URL = f"{OLLAMA_BASE_URL}/api/generate" if OLLAMA_BASE_URL else ""
 OLLAMA_API_KEY = os.getenv("OLLAMA_API_KEY", "").strip()
 OLLAMA_AUTH_SCHEME = os.getenv("OLLAMA_AUTH_SCHEME", "Bearer").strip()
 OLLAMA_KEY_HEADER = os.getenv("OLLAMA_KEY_HEADER", "Authorization").strip()
+OLLAMA_DEFAULT_MODEL = os.getenv("OLLAMA_MODEL", "gpt-oss:120b-cloud").strip() or "gpt-oss:120b-cloud"
+GENAI_MAX_PROMPT_CHARS = int(os.getenv("GENAI_MAX_PROMPT_CHARS", "2000"))
+GENAI_MAX_HISTORY_MESSAGES = int(os.getenv("GENAI_MAX_HISTORY_MESSAGES", "12"))
+GENAI_DETERMINISTIC_SEED = int(os.getenv("GENAI_DETERMINISTIC_SEED", "42"))
 LAST_OLLAMA_ERROR = ""
 
 MODELS = {
@@ -49,7 +50,7 @@ def _system_prompt_override_for_model(model_id):
 
 
 def _build_ollama_headers():
-    headers = {"Content-Type": "application/json"}
+    headers = {}
     if OLLAMA_API_KEY:
         if OLLAMA_KEY_HEADER.lower() == "authorization":
             headers["Authorization"] = f"{OLLAMA_AUTH_SCHEME} {OLLAMA_API_KEY}".strip()
@@ -58,14 +59,21 @@ def _build_ollama_headers():
     return headers
 
 
+def _get_ollama_client():
+    if not OLLAMA_BASE_URL:
+        return None
+    return Client(host=OLLAMA_BASE_URL, headers=_build_ollama_headers())
+
+
 def ollama_health_check(timeout=2):
     if not OLLAMA_BASE_URL:
         return False
-    status_url = f"{OLLAMA_BASE_URL}/"
-    req = urllib.request.Request(status_url, headers=_build_ollama_headers(), method="GET")
     try:
-        with urllib.request.urlopen(req, timeout=timeout):
-            return True
+        client = _get_ollama_client()
+        if client is None:
+            return False
+        client.list()
+        return True
     except Exception:
         return False
 
@@ -73,13 +81,13 @@ def ollama_health_check(timeout=2):
 def _fetch_ollama_tags(timeout=6):
     if not OLLAMA_BASE_URL:
         return []
-    tags_url = f"{OLLAMA_BASE_URL}/api/tags"
-    req = urllib.request.Request(tags_url, headers=_build_ollama_headers(), method="GET")
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-            models = data.get("models", [])
-            return [m.get("name", "") for m in models if m.get("name")]
+        client = _get_ollama_client()
+        if client is None:
+            return []
+        data = client.list()
+        models = data.get("models", []) if isinstance(data, dict) else []
+        return [m.get("name", "") for m in models if isinstance(m, dict) and m.get("name")]
     except Exception:
         return []
 
@@ -89,32 +97,59 @@ def model_health_report():
     tag_set = set(tags)
     report = {
         "ollama_base_url": OLLAMA_BASE_URL or "not_configured",
+        "ollama_model": OLLAMA_DEFAULT_MODEL,
         "ollama_configured": bool(OLLAMA_BASE_URL),
         "ollama_reachable": ollama_health_check(timeout=2),
         "available_tags": tags,
+        "limits": {
+            "max_prompt_chars": GENAI_MAX_PROMPT_CHARS,
+            "max_history_messages": GENAI_MAX_HISTORY_MESSAGES,
+            "seed": GENAI_DETERMINISTIC_SEED,
+        },
         "models": {},
         "last_error": LAST_OLLAMA_ERROR,
     }
 
     for model_id, mod in MODELS.items():
-        preferred = getattr(mod, "OLLAMA_MODELS", [mod.OLLAMA_MODEL])
-        matched = [m for m in preferred if m in tag_set]
+        preferred = [OLLAMA_DEFAULT_MODEL]
+        matched = [m for m in preferred if m in tag_set] if tags else []
         report["models"][model_id] = {
             "preferred": preferred,
             "matched": matched,
-            "usable": bool(matched),
+            "usable": report["ollama_reachable"] and bool(OLLAMA_DEFAULT_MODEL),
             "max_tokens": getattr(mod, "MAX_TOKENS", 0),
         }
     return report
 
 
-def _query_ollama(prompt, model_module, thinking_active=False):
+def _normalize_messages(prompt, messages):
+    normalized = []
+    for item in messages or []:
+        if not isinstance(item, dict):
+            continue
+        role = str(item.get("role", "")).strip().lower()
+        content = str(item.get("content", "")).strip()
+        if role not in {"user", "assistant", "system"} or not content:
+            continue
+        normalized.append({
+            "role": role,
+            "content": content[:GENAI_MAX_PROMPT_CHARS],
+        })
+
+    normalized = normalized[-GENAI_MAX_HISTORY_MESSAGES:]
+    if not normalized and prompt:
+        normalized.append({"role": "user", "content": prompt[:GENAI_MAX_PROMPT_CHARS]})
+    return normalized
+
+
+def _query_ollama(prompt, model_module, messages=None, thinking_active=False):
     """
     Send a prompt to local Ollama using the selected model's settings.
     Returns (response_text, thinking_active).
     """
     global LAST_OLLAMA_ERROR
-    if not OLLAMA_URL:
+    client = _get_ollama_client()
+    if client is None:
         LAST_OLLAMA_ERROR = "OLLAMA_BASE_URL is not configured"
         return None, False
 
@@ -127,54 +162,49 @@ def _query_ollama(prompt, model_module, thinking_active=False):
     if override:
         system = override
 
-    model_names = getattr(model_module, "OLLAMA_MODELS", [model_module.OLLAMA_MODEL])
+    chat_messages = _normalize_messages(prompt, messages)
+    if chat_messages and chat_messages[0]["role"] != "system":
+        chat_messages = [{"role": "system", "content": system}] + chat_messages
+    elif chat_messages:
+        chat_messages[0]["content"] = system
+
     options = {
         "num_predict": model_module.MAX_TOKENS,
         "temperature": model_module.TEMPERATURE,
         "top_k": model_module.TOP_K,
         "top_p": model_module.TOP_P,
         "repeat_penalty": 1.1,
+        "seed": GENAI_DETERMINISTIC_SEED,
     }
     options.update(getattr(model_module, "OLLAMA_OPTIONS", {}))
-    timeout = 20 if model_module.MODEL_ID == "g0.5" else 12
 
-    for model_name in model_names:
-        payload = json.dumps({
-            "model": model_name,
-            "prompt": prompt,
-            "system": system,
-            "stream": False,
-            "options": options,
-        }).encode("utf-8")
-
-        req = urllib.request.Request(
-            OLLAMA_URL,
-            data=payload,
-            headers=_build_ollama_headers(),
-            method="POST",
+    try:
+        stream = client.chat(
+            model=OLLAMA_DEFAULT_MODEL,
+            messages=chat_messages,
+            stream=True,
+            options=options,
         )
-
-        try:
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-                text = data.get("response", "").strip()
-                LAST_OLLAMA_ERROR = ""
-                return text, thinking_active
-        except urllib.error.HTTPError as e:
-            try:
-                body = e.read().decode("utf-8", errors="replace")
-            except Exception:
-                body = ""
-            LAST_OLLAMA_ERROR = f"{e.code} {body[:180]}".strip()
-            continue
-        except Exception as e:
-            LAST_OLLAMA_ERROR = str(e)
-            continue
+        parts = []
+        for part in stream:
+            if not isinstance(part, dict):
+                continue
+            message = part.get("message", {}) or {}
+            content = message.get("content", "")
+            if content:
+                parts.append(content)
+        text = "".join(parts).strip()
+        if text:
+            LAST_OLLAMA_ERROR = ""
+            return text, thinking_active
+        LAST_OLLAMA_ERROR = "Empty response from Ollama Cloud"
+    except Exception as e:
+        LAST_OLLAMA_ERROR = str(e)
 
     return None, False
 
 
-def query(prompt, model_id=None):
+def query(prompt, model_id=None, messages=None):
     """
     Main entry point.
 
@@ -191,11 +221,11 @@ def query(prompt, model_id=None):
             "thinking": False,
         }
 
-    prompt = prompt.strip()[:600]
+    prompt = prompt.strip()[:GENAI_MAX_PROMPT_CHARS]
     model_id = model_id if model_id in MODELS else DEFAULT_MODEL
     mod = MODELS[model_id]
 
-    reply, thinking = _query_ollama(prompt, mod)
+    reply, thinking = _query_ollama(prompt, mod, messages=messages)
     if reply:
         return {
             "response": reply,

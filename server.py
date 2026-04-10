@@ -24,9 +24,10 @@ def chat():
     data = request.get_json(silent=True)
     if not data or "prompt" not in data:
         return jsonify({"error": "Missing 'prompt'"}), 400
-    prompt = str(data.get("prompt", ""))[:600]
+    prompt = str(data.get("prompt", ""))
     model_id = str(data.get("model", ai.DEFAULT_MODEL))
-    result = ai.query(prompt, model_id)
+    messages = data.get("messages", [])
+    result = ai.query(prompt, model_id, messages=messages)
     return jsonify(result)
 
 
@@ -41,6 +42,7 @@ def status():
         "ollama": ollama_up,
         "ollama_configured": bool(ai.OLLAMA_BASE_URL),
         "ollama_base_url": ai.OLLAMA_BASE_URL,
+        "ollama_model": ai.OLLAMA_DEFAULT_MODEL,
         "default_model": ai.DEFAULT_MODEL,
         "models": list(ai.MODELS.keys()),
     })
