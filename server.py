@@ -39,10 +39,16 @@ def status():
         "version": "0.26.2.0",
         "uptime_seconds": uptime,
         "ollama": ollama_up,
+        "ollama_configured": bool(ai.OLLAMA_BASE_URL),
         "ollama_base_url": ai.OLLAMA_BASE_URL,
         "default_model": ai.DEFAULT_MODEL,
         "models": list(ai.MODELS.keys()),
     })
+
+
+@app.route("/health/models", methods=["GET"])
+def health_models():
+    return jsonify(ai.model_health_report())
 
 
 if __name__ == "__main__":

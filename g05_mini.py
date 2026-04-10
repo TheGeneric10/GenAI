@@ -16,7 +16,8 @@ Model Spec:
 MODEL_ID      = "g0.5-mini"
 MODEL_VERSION = "0.26.2.0"
 OLLAMA_MODEL  = "llama3"
-MAX_TOKENS    = 200
+OLLAMA_MODELS = ["llama3.2:1b", "llama3.2:3b", "llama3.2", "llama3", "llama3:latest"]
+MAX_TOKENS    = 256
 TEMPERATURE   = 0.75
 TOP_K         = 35
 TOP_P         = 0.88
@@ -62,4 +63,4 @@ def rule_response(prompt):
     if re.search(TIME_PAT, prompt.lower()):
         now = datetime.now()
         return {"intent": "time", "response": f"{now.strftime('%H:%M')} · {now.strftime('%A, %B %d %Y')}"}
-    return {"intent": "unknown", "response": "Ollama is offline. Reconnect for full g0.5-mini capabilities."}
+    return {"intent": "unknown", "response": "Model unavailable. Configure remote Ollama and use llama3.2:1b, or switch to g0.5-nano."}

@@ -1,9 +1,8 @@
 """
 models/g05_nano.py - GenAI g0.5-nano
-Ultra-light Ollama-backed model with simple offline fallbacks.
+Command-first nano profile with ultra-light Ollama settings.
 """
 
-import hashlib
 import math
 import re
 from datetime import datetime
@@ -12,101 +11,21 @@ from datetime import datetime
 MODEL_ID = "g0.5-nano"
 MODEL_VERSION = "0.26.2.0"
 OLLAMA_MODEL = "llama3.2:1b"
-OLLAMA_MODELS = ["llama3.2:1b", "llama3.2", "llama3"]
-MAX_TOKENS = 64
-TEMPERATURE = 0.35
-TOP_K = 12
-TOP_P = 0.72
+OLLAMA_MODELS = ["llama3.2:1b", "llama3.2:3b", "llama3.2", "llama3", "llama3:latest"]
+MAX_TOKENS = 32
+TEMPERATURE = 0.25
+TOP_K = 10
+TOP_P = 0.70
 OLLAMA_OPTIONS = {
-    "num_ctx": 512,
+    "num_ctx": 384,
     "num_thread": 2,
 }
 
 SYSTEM_PROMPT = (
-    "You are GenAI g0.5-nano, an ultra-lightweight assistant. "
-    "Reply in 1 short sentence only, maximum 18 words. "
-    "No markdown. No lists. No code. No explanations. "
-    "Simple, friendly, and direct only."
+    "You are GenAI g0.5-nano in compact mode. "
+    "Reply in plain text using one short sentence. "
+    "Keep output direct and concise."
 )
-
-
-def _fingerprint(text):
-    raw = hashlib.sha256(text.lower().strip().encode()).digest()
-    return "".join(f"{b:08b}" for b in raw[:4])
-
-
-def _fp_index(fp, n):
-    value = 0
-    for chunk_start in range(0, len(fp), 8):
-        value ^= int(fp[chunk_start:chunk_start + 8], 2)
-    return value % n
-
-
-def pick(prompt, bucket):
-    return bucket[_fp_index(_fingerprint(prompt), len(bucket))]
-
-
-VAULT = {
-    "greeting": [
-        "Hey! What can I help with?",
-        "Hello! GenAI nano online.",
-        "Hi there! What do you need?",
-        "Hey, good to see you!",
-    ],
-    "status": [
-        "Running smooth and light.",
-        "All good - nano and fast.",
-        "Nominal. Ready for you.",
-        "Clean bill of health.",
-    ],
-    "farewell": [
-        "See you later!",
-        "Bye! Come back anytime.",
-        "Later! Stay curious.",
-        "Goodbye - take care!",
-    ],
-    "thanks": [
-        "Anytime!",
-        "Happy to help.",
-        "No problem!",
-        "You're welcome!",
-    ],
-    "about": [
-        "I'm g0.5-nano - ultra-light, fast, and simple.",
-        "GenAI nano: small model, quick answers.",
-        "Pocket-sized assistant for everyday basics.",
-    ],
-    "joke": [
-        "Why dark mode? Light attracts bugs.",
-        "My RAM forgot my joke. Try again?",
-        "AI broke up - too many strings attached.",
-        "Computer drunk? Too many screenshots.",
-    ],
-    "compliment": [
-        "Thanks!",
-        "Appreciated - you're kind.",
-        "That made my bits happy.",
-        "Thank you!",
-    ],
-    "unknown": [
-        "Could you simplify that? I'm nano-sized.",
-        "That's a bit complex for me.",
-        "Try something simpler - I'm nano!",
-        "Outside my scope. Keep it basic.",
-    ],
-}
-
-PATTERNS = {
-    "greeting": r"\b(hi|hello|hey|howdy|sup|yo|good morning|good evening|what'?s up|greetings)\b",
-    "farewell": r"\b(bye|goodbye|see you|later|farewell|cya|exit|quit|peace)\b",
-    "status": r"\b(how are you|how'?re you|you okay|you good|doing well|status)\b",
-    "thanks": r"\b(thanks|thank you|thx|ty|appreciate|cheers)\b",
-    "about": r"\b(who are you|what are you|about yourself|what is genai|your name|what can you do)\b",
-    "joke": r"\b(joke|funny|laugh|humor|make me laugh)\b",
-    "compliment": r"\b(good job|nice|awesome|great|amazing|smart|well done|excellent)\b",
-    "math": r"(\d[\d\s\+\-\*/\^\.()]+\d|sqrt|calculate|compute|what is \d|solve|evaluate)",
-    "time": r"\b(what time|current time|time is it|date|today|what day)\b",
-}
 
 SAFE_MATH = {
     "sqrt": math.sqrt,
@@ -126,36 +45,53 @@ SAFE_MATH = {
 }
 
 
-def _solve_math(prompt):
-    expr = re.sub(r"(what is|calculate|compute|solve|evaluate)", "", prompt, flags=re.IGNORECASE)
-    expr = re.sub(r"[^0-9+\-*/().^ a-zA-Z_]", "", expr).strip().replace("^", "**")
+def _solve_math(expr):
+    clean = re.sub(r"[^0-9+\-*/().^ a-zA-Z_]", "", expr).strip().replace("^", "**")
+    if not clean:
+        return None
     try:
-        result = eval(expr, {"__builtins__": {}}, SAFE_MATH)
+        result = eval(clean, {"__builtins__": {}}, SAFE_MATH)
         return f"Result: {result}"
     except Exception:
         return None
 
 
-def _classify(prompt):
-    prompt_lower = prompt.lower()
-    for intent, pattern in PATTERNS.items():
-        if re.search(pattern, prompt_lower):
-            return intent
-    return "unknown"
+def _handle_command(prompt):
+    text = prompt.strip()
+    if not text.startswith("/"):
+        return None
+    lower = text.lower()
+    if lower in ("/help", "/commands"):
+        return "Commands: /time, /date, /calc <expr>, /ping, /about"
+    if lower == "/time":
+        return datetime.now().strftime("%H:%M")
+    if lower == "/date":
+        return datetime.now().strftime("%A, %B %d %Y")
+    if lower.startswith("/calc"):
+        expr = text[5:].strip()
+        solved = _solve_math(expr)
+        return solved or "Usage: /calc 12*(4+1)"
+    if lower == "/ping":
+        return "pong"
+    if lower == "/about":
+        return "g0.5-nano: command-first, minimal tokens, fastest profile."
+    return "Unknown command. Use /help."
 
 
 def rule_response(prompt):
-    intent = _classify(prompt)
-    if intent == "math":
-        result = _solve_math(prompt)
-        if result:
-            return {"intent": "math", "response": result}
-        intent = "unknown"
-    if intent == "time":
-        now = datetime.now()
-        return {
-            "intent": "time",
-            "response": f"{now.strftime('%H:%M')} | {now.strftime('%A, %B %d %Y')}",
-        }
-    bucket = VAULT.get(intent, VAULT["unknown"])
-    return {"intent": intent, "response": pick(prompt, bucket)}
+    cmd = _handle_command(prompt)
+    if cmd:
+        return {"intent": "command", "response": cmd}
+
+    lower = prompt.lower()
+    if re.search(r"\b(time|date|today|what day)\b", lower):
+        return {"intent": "time", "response": datetime.now().strftime("%H:%M | %A, %B %d %Y")}
+    if re.search(r"\b(calculate|compute|solve|what is)\b", lower):
+        solved = _solve_math(prompt)
+        if solved:
+            return {"intent": "math", "response": solved}
+
+    return {
+        "intent": "offline",
+        "response": "Nano model unavailable. Use /help commands or reconnect remote Ollama.",
+    }

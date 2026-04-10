@@ -1,18 +1,18 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>GenAI</title>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Montserrat:wght@600;700&display=swap" rel="stylesheet"/>
 <style>
-/* ── Reset ──────────────────────────────────────────────── */
+/* â”€â”€ Reset â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;width:100%;overflow:hidden;}
 *{-webkit-user-select:none;user-select:none;-webkit-user-drag:none;}
 input,textarea{-webkit-user-select:text;user-select:text;}
 
-/* ── Theme Variables ────────────────────────────────────── */
+/* â”€â”€ Theme Variables â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 :root{
   --bg:#0a0a0a;
   --sidebar:#0f0f0f;
@@ -58,7 +58,7 @@ body.light{
 
 body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex;height:100vh;width:100vw;transition:var(--transition);}
 
-/* ── Sidebar ────────────────────────────────────────────── */
+/* â”€â”€ Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #sidebar{
   width:var(--sidebar-w);min-width:var(--sidebar-w);
   background:var(--sidebar);
@@ -71,7 +71,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
 
 .brand-row{display:flex;align-items:center;gap:10px;padding:6px 6px 10px;border-bottom:1px solid var(--border);margin-bottom:4px;}
 .brand-icon{width:30px;height:30px;background:var(--blue);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
-.brand-name{font-size:15px;font-weight:600;color:var(--text);letter-spacing:-.3px;}
+.brand-title{display:flex;align-items:baseline;gap:6px;}
+.brand-name{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.3px;font-family:'Montserrat',var(--font);}
+.brand-beta{font-size:9px;color:var(--text-muted);text-transform:lowercase;letter-spacing:.5px;}
 .brand-ver{font-size:9px;color:var(--text-muted);letter-spacing:.3px;}
 
 .btn-new{
@@ -97,16 +99,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
 .hi:hover{background:var(--sidebar-hover);}
 .hi.active{background:var(--surface);}
 .hi-title{font-size:12.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;}
-.hi-del{opacity:0;background:none;border:none;color:var(--text-muted);cursor:pointer;padding:2px;border-radius:4px;display:flex;transition:opacity .15s;}
+.hi-del{opacity:0;background:none;border:none;color:var(--text-muted);cursor:pointer;padding:2px;border-radius:4px;display:flex;transition:opacity .15s,color .15s,background .15s;}
 .hi:hover .hi-del{opacity:1;}
-.hi-del:hover{color:var(--dot-red);}
+.hi-del:hover{color:var(--dot-red);background:rgba(239,68,68,.12);}
 
 /* Sidebar bottom */
 .sb-bottom{padding:8px 10px 12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:2px;}
 .sb-btn{display:flex;align-items:center;gap:9px;background:none;border:none;color:var(--text-muted);font-family:var(--font);font-size:12.5px;cursor:pointer;padding:7px 9px;border-radius:7px;width:100%;text-align:left;transition:var(--transition);}
 .sb-btn:hover{background:var(--sidebar-hover);color:var(--text);}
 
-/* ── Main ───────────────────────────────────────────────── */
+/* â”€â”€ Main â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #main{flex:1;display:flex;flex-direction:column;height:100vh;min-width:0;}
 
 /* Topbar */
@@ -166,7 +168,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
 .dot.yellow{background:var(--dot-yellow);box-shadow:0 0 6px var(--dot-yellow);}
 .dot.red   {background:var(--dot-red);  box-shadow:0 0 6px var(--dot-red);}
 
-/* ── Chat Area ──────────────────────────────────────────── */
+/* â”€â”€ Chat Area â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #chat-area{flex:1;overflow-y:auto;padding:28px 0;display:flex;flex-direction:column;}
 #chat-area::-webkit-scrollbar{width:4px;}
 #chat-area::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
@@ -202,7 +204,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
 .chip{background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:18px;padding:5px 13px;font-size:12px;cursor:pointer;transition:var(--transition);font-family:var(--font);}
 .chip:hover{background:var(--sidebar-hover);border-color:var(--blue);color:var(--text);}
 
-/* ── Input ──────────────────────────────────────────────── */
+/* â”€â”€ Input â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #input-wrap{padding:12px 20px 16px;flex-shrink:0;border-top:1px solid var(--border);background:var(--bg);transition:var(--transition);}
 
 #input-box{
@@ -236,7 +238,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
 .input-meta{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;font-size:10.5px;color:var(--text-dim);max-width:820px;margin-left:auto;margin-right:auto;}
 .engine-pill{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1px 8px;font-size:10px;}
 
-/* ── Modals ─────────────────────────────────────────────── */
+/* â”€â”€ Modals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:300;backdrop-filter:blur(4px);}
 .overlay.open{display:flex;}
 
@@ -284,6 +286,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
 .btn-secondary:hover{background:var(--sidebar-hover);color:var(--text);}
 .btn-danger{background:rgba(239,68,68,.1);color:#ef4444;border-color:rgba(239,68,68,.25);}
 .btn-danger:hover{background:rgba(239,68,68,.18);}
+.icon-actions{display:flex;align-items:center;gap:8px;}
+.icon-btn{
+  width:32px;height:32px;border-radius:8px;border:1px solid var(--border);
+  background:var(--surface2);color:var(--text-muted);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:var(--transition);
+}
+.icon-btn.edit:hover{color:#3b82f6;border-color:rgba(59,130,246,.45);background:rgba(59,130,246,.12);}
+.icon-btn.archive:hover{color:#f59e0b;border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.12);}
+.icon-btn.trash:hover{color:#ef4444;border-color:rgba(239,68,68,.45);background:rgba(239,68,68,.12);}
 
 /* Confirm modal */
 #confirm-modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;width:360px;max-width:92vw;padding:24px;}
@@ -301,21 +312,33 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
 .mi{display:flex;align-items:center;justify-content:space-between;padding:9px 11px;background:var(--bg);border:1px solid var(--border);border-radius:7px;gap:8px;}
 .mi-title{font-size:12.5px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .mi-model{font-size:10px;font-family:var(--mono);color:var(--text-muted);background:var(--surface2);padding:2px 7px;border-radius:10px;flex-shrink:0;}
-.mi-del{background:none;border:none;color:var(--text-dim);cursor:pointer;padding:3px;border-radius:4px;transition:color .15s;display:flex;flex-shrink:0;}
-.mi-del:hover{color:var(--dot-red);}
+.mi-actions{display:flex;align-items:center;gap:6px;flex-shrink:0;}
 .manage-foot{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;}
+
+/* Action popups */
+#rename-modal,#archive-modal,#trash-modal{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;width:380px;max-width:92vw;padding:20px;
+}
+#rename-modal h3,#archive-modal h3,#trash-modal h3{font-size:15px;font-weight:600;margin-bottom:8px;}
+#rename-modal p,#archive-modal p,#trash-modal p{font-size:12.5px;color:var(--text-muted);line-height:1.5;margin-bottom:14px;}
+.popup-input{
+  width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);
+  font-family:var(--font);font-size:13px;padding:9px 10px;outline:none;margin-bottom:14px;
+}
+.popup-input:focus{border-color:rgba(59,130,246,.5);}
+.popup-foot{display:flex;gap:8px;}
 </style>
 </head>
 <body>
 
-<!-- ── Sidebar ── -->
+<!-- â”€â”€ Sidebar â”€â”€ -->
 <aside id="sidebar">
   <div class="sb-top">
     <div class="brand-row">
       <div class="brand-icon">G</div>
       <div>
-        <div class="brand-name">GenAI</div>
-        <div class="brand-ver">v0.26.2.0 · g0.5-nano</div>
+        <div class="brand-title"><span class="brand-name">GenAI</span><span class="brand-beta">beta</span></div>
+        <div class="brand-ver">v0.26.2.0 Â· g0.5-nano</div>
       </div>
     </div>
     <button class="btn-new" id="btn-new">
@@ -337,7 +360,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
   </div>
 </aside>
 
-<!-- ── Main ── -->
+<!-- â”€â”€ Main â”€â”€ -->
 <main id="main">
   <!-- Topbar -->
   <div id="topbar">
@@ -356,21 +379,21 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
             <div class="mo-dot md-nano"></div>
             <div class="mo-info">
               <div class="mo-name">g0.5-nano</div>
-              <div class="mo-desc">Ultra-light · Easy→Moderate · Rule-first · Fastest</div>
+              <div class="mo-desc">Ultra-light Â· Easyâ†’Moderate Â· Rule-first Â· Fastest</div>
             </div>
           </div>
           <div class="model-option selected" data-model="g0.5-mini">
             <div class="mo-dot md-mini"></div>
             <div class="mo-info">
               <div class="mo-name">g0.5-mini</div>
-              <div class="mo-desc">Default · Easy→High · Essays, strategies, light coding</div>
+              <div class="mo-desc">Default Â· Easyâ†’High Â· Essays, strategies, light coding</div>
             </div>
           </div>
           <div class="model-option" data-model="g0.5">
             <div class="mo-dot md-pro"></div>
             <div class="mo-info">
               <div class="mo-name">g0.5</div>
-              <div class="mo-desc">Pro · High→Very High · Coding · ThinkingMini V0.3</div>
+              <div class="mo-desc">Pro Â· Highâ†’Very High Â· Coding Â· ThinkingMini V0.3</div>
             </div>
           </div>
         </div>
@@ -379,7 +402,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
 
     <div class="status-pill">
       <div class="dot" id="dot"></div>
-      <span id="dot-label">connecting…</span>
+      <span id="dot-label">connectingâ€¦</span>
     </div>
   </div>
 
@@ -404,25 +427,25 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
   <!-- Input -->
   <div id="input-wrap">
     <div id="input-box">
-      <textarea id="prompt-input" rows="1" placeholder="Message GenAI…"></textarea>
+      <textarea id="prompt-input" rows="1" placeholder="Message GenAIâ€¦"></textarea>
       <button id="send-btn">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
     </div>
     <div class="input-meta">
-      <span id="engine-hint" class="engine-pill">connecting…</span>
-      <span>·</span>
+      <span id="engine-hint" class="engine-pill">connectingâ€¦</span>
+      <span>Â·</span>
       <span>GenAI v0.26.2.0</span>
     </div>
   </div>
 </main>
 
-<!-- ── Settings Overlay ── -->
+<!-- â”€â”€ Settings Overlay â”€â”€ -->
 <div class="overlay" id="settings-overlay">
   <div id="settings-modal">
     <div class="modal-head">
       <h2>Settings</h2>
-      <button class="modal-x" id="settings-x">×</button>
+      <button class="modal-x" id="settings-x">Ã—</button>
     </div>
 
     <!-- Appearance -->
@@ -465,16 +488,16 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
     <div class="s-section">
       <div class="s-section-title">System</div>
       <div class="s-row">
-        <div><div class="s-label">Backend</div><div class="s-desc">Local server address</div></div>
-        <div class="s-val">localhost:5000</div>
+        <div><div class="s-label">Backend</div><div class="s-desc">Current API endpoint</div></div>
+        <div class="s-val" id="s-backend">auto</div>
       </div>
       <div class="s-row">
-        <div><div class="s-label">Ollama</div><div class="s-desc">Local LLM engine status</div></div>
-        <div class="s-val" id="s-ollama">checking…</div>
+        <div><div class="s-label">Ollama</div><div class="s-desc">Remote model gateway status</div></div>
+        <div class="s-val" id="s-ollama">checkingâ€¦</div>
       </div>
       <div class="s-row">
         <div><div class="s-label">Uptime</div><div class="s-desc">Server uptime</div></div>
-        <div class="s-val" id="s-uptime">—</div>
+        <div class="s-val" id="s-uptime">â€”</div>
       </div>
       <div class="s-row">
         <div><div class="s-label">Version</div><div class="s-desc">GenAI build version</div></div>
@@ -491,24 +514,33 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
         <div class="s-val" id="s-chats">0 chats</div>
       </div>
       <div class="s-row">
-        <div><div class="s-label">Archive All Chats</div><div class="s-desc">Download history as JSON</div></div>
-        <button class="btn-modal btn-secondary" id="btn-archive" style="max-width:90px;padding:5px 10px;font-size:11.5px;">Archive</button>
+        <div><div class="s-label">History Actions</div><div class="s-desc">Rename, archive, or clear all chats</div></div>
+        <div class="icon-actions">
+          <button class="icon-btn edit" id="btn-edit-active" title="Rename active chat">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+          </button>
+          <button class="icon-btn archive" id="btn-archive" title="Archive all chats">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8h14v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M10 12h4"/></svg>
+          </button>
+          <button class="icon-btn trash" id="btn-clear-settings" title="Clear all chats">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="modal-foot">
-      <button class="btn-modal btn-danger" id="btn-clear-settings">Clear All History</button>
       <button class="btn-modal btn-primary" id="settings-close-btn">Done</button>
     </div>
   </div>
 </div>
 
-<!-- ── Manage History Overlay ── -->
+<!-- â”€â”€ Manage History Overlay â”€â”€ -->
 <div class="overlay" id="manage-overlay">
   <div id="manage-modal">
     <div class="manage-head">
       <h2>Chat History</h2>
-      <button class="modal-x" id="manage-x">×</button>
+      <button class="modal-x" id="manage-x">Ã—</button>
     </div>
     <div id="manage-list"></div>
     <div class="manage-foot">
@@ -518,7 +550,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
   </div>
 </div>
 
-<!-- ── Confirm Overlay ── -->
+<!-- â”€â”€ Confirm Overlay â”€â”€ -->
 <div class="overlay" id="confirm-overlay">
   <div id="confirm-modal">
     <h3 id="confirm-title">Are you sure?</h3>
@@ -530,17 +562,60 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
   </div>
 </div>
 
-<script>
-// ── Config ────────────────────────────────────────────────
-const API = "http://127.0.0.1:5000";
+<div class="overlay" id="rename-overlay">
+  <div id="rename-modal">
+    <h3>Rename Chat</h3>
+    <p>Set a new title for this chat.</p>
+    <input class="popup-input" id="rename-input" maxlength="80" placeholder="New chat title"/>
+    <div class="popup-foot">
+      <button class="btn-modal btn-secondary" id="rename-cancel">Cancel</button>
+      <button class="btn-modal btn-primary" id="rename-save">Save</button>
+    </div>
+  </div>
+</div>
 
-// ── State ─────────────────────────────────────────────────
+<div class="overlay" id="archive-overlay">
+  <div id="archive-modal">
+    <h3>Archive Chats</h3>
+    <p id="archive-body">Download all chat history as a JSON file.</p>
+    <div class="popup-foot">
+      <button class="btn-modal btn-secondary" id="archive-cancel">Cancel</button>
+      <button class="btn-modal btn-primary" id="archive-save">Download</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="trash-overlay">
+  <div id="trash-modal">
+    <h3>Delete Chats</h3>
+    <p id="trash-body">This action cannot be undone.</p>
+    <div class="popup-foot">
+      <button class="btn-modal btn-secondary" id="trash-cancel">Cancel</button>
+      <button class="btn-modal btn-danger" id="trash-confirm">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// â”€â”€ Config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const API = (() => {
+  const qsApi = new URLSearchParams(window.location.search).get("api");
+  if (qsApi) return qsApi.replace(/\/+$/, "");
+  const savedApi = localStorage.getItem("genai_api_base");
+  if (savedApi) return savedApi.replace(/\/+$/, "");
+  if (window.location.protocol === "file:") return "http://127.0.0.1:5000";
+  return "";
+})();
+
+// â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 let sessions     = JSON.parse(localStorage.getItem("genai_sessions") || "[]");
 let activeId     = null;
 let activeModel  = localStorage.getItem("genai_default_model") || "g0.5-mini";
 let confirmCb    = null;
+let renameTarget = null;
+let trashMode    = null;
 
-// ── DOM ───────────────────────────────────────────────────
+// â”€â”€ DOM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const chatArea    = document.getElementById("chat-area");
 const promptInput = document.getElementById("prompt-input");
 const sendBtn     = document.getElementById("send-btn");
@@ -551,14 +626,14 @@ const histList    = document.getElementById("hist-list");
 const emptyState  = document.getElementById("empty-state");
 const engineHint  = document.getElementById("engine-hint");
 
-// ── Utils ─────────────────────────────────────────────────
+// â”€â”€ Utils â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function save(){localStorage.setItem("genai_sessions",JSON.stringify(sessions));}
 function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 function getActive(){return sessions.find(s=>s.id===activeId)||null;}
-function titleFrom(t){return t.length>32?t.slice(0,32)+"…":t;}
+function titleFrom(t){return t.length>32?t.slice(0,32)+"â€¦":t;}
 function escHtml(t){return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
 
-// ── Status Dot ────────────────────────────────────────────
+// â”€â”€ Status Dot â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function setDot(state,label){dot.className="dot "+state;dotLabel.textContent=label;}
 
 async function pollStatus(){
@@ -567,18 +642,33 @@ async function pollStatus(){
     if(r.ok){
       const d=await r.json();
       setDot("green","online");
+      document.getElementById("s-backend").textContent=(API||window.location.origin).replace(/^https?:\/\//,"");
       document.getElementById("s-uptime").textContent=d.uptime_seconds+"s";
       const ol=d.ollama;
       document.getElementById("s-ollama").textContent=ol?"running":"offline";
       document.getElementById("s-ollama").style.color=ol?"var(--dot-green)":"var(--dot-red)";
-      engineHint.textContent=ol?`${activeModel} · llama3`:`${activeModel} · rule`;
-      engineHint.style.color=ol?"var(--dot-green)":"var(--dot-yellow)";
+      try{
+        const hr=await fetch(`${API}/health/models`,{signal:AbortSignal.timeout(4000)});
+        if(hr.ok){
+          const hd=await hr.json();
+          const m=hd.models&&hd.models[activeModel];
+          const usable=!!(m&&m.usable);
+          engineHint.textContent=usable?`${activeModel} Â· ollama`:`${activeModel} Â· rule`;
+          engineHint.style.color=usable?"var(--dot-green)":"var(--dot-yellow)";
+        }else{
+          engineHint.textContent=ol?`${activeModel} Â· ollama`:`${activeModel} Â· rule`;
+          engineHint.style.color=ol?"var(--dot-green)":"var(--dot-yellow)";
+        }
+      }catch{
+        engineHint.textContent=ol?`${activeModel} Â· ollama`:`${activeModel} Â· rule`;
+        engineHint.style.color=ol?"var(--dot-green)":"var(--dot-yellow)";
+      }
     } else setDot("yellow","degraded");
   } catch{setDot("red","offline");engineHint.textContent="offline";}
 }
 pollStatus();setInterval(pollStatus,7000);
 
-// ── Dark / Light Mode ─────────────────────────────────────
+// â”€â”€ Dark / Light Mode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const toggleDark=document.getElementById("toggle-dark");
 function applyTheme(dark){
   document.body.classList.toggle("light",!dark);
@@ -589,7 +679,7 @@ toggleDark.addEventListener("change",()=>applyTheme(toggleDark.checked));
 const savedDark=localStorage.getItem("genai_dark");
 applyTheme(savedDark===null?true:savedDark==="1");
 
-// ── Model Selector ─────────────────────────────────────────
+// â”€â”€ Model Selector â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const modelBtn       = document.getElementById("model-btn");
 const modelDropdown  = document.getElementById("model-dropdown");
 const modelBtnLabel  = document.getElementById("model-btn-label");
@@ -621,7 +711,7 @@ function setModel(mid,{persistDefault=true,syncSession=true}={}){
     }
   }
   modelDropdown.classList.remove("open");
-  engineHint.textContent=mid+" · …";
+  engineHint.textContent=mid+" Â· â€¦";
   pollStatus();
 }
 
@@ -639,7 +729,7 @@ defModelSelect.addEventListener("change",()=>{
 
 setModel(activeModel);
 
-// ── Confirm Dialog ─────────────────────────────────────────
+// â”€â”€ Confirm Dialog â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const confirmOverlay=document.getElementById("confirm-overlay");
 function showConfirm(title,body,cb){
   document.getElementById("confirm-title").textContent=title;
@@ -651,7 +741,64 @@ document.getElementById("confirm-cancel").addEventListener("click",()=>confirmOv
 document.getElementById("confirm-ok").addEventListener("click",()=>{confirmOverlay.classList.remove("open");if(confirmCb)confirmCb();});
 confirmOverlay.addEventListener("click",e=>{if(e.target===confirmOverlay)confirmOverlay.classList.remove("open");});
 
-// ── History Render ─────────────────────────────────────────
+const renameOverlay=document.getElementById("rename-overlay");
+const renameInput=document.getElementById("rename-input");
+function openRenamePopup(sessionId){
+  const s=sessions.find(x=>x.id===sessionId);
+  if(!s)return;
+  renameTarget=sessionId;
+  renameInput.value=s.title||"";
+  renameOverlay.classList.add("open");
+  setTimeout(()=>renameInput.focus(),0);
+}
+function closeRenamePopup(){renameOverlay.classList.remove("open");renameTarget=null;}
+document.getElementById("rename-cancel").addEventListener("click",closeRenamePopup);
+document.getElementById("rename-save").addEventListener("click",()=>{
+  const s=sessions.find(x=>x.id===renameTarget);
+  const title=renameInput.value.trim().slice(0,80);
+  if(!s||!title)return;
+  s.title=title;
+  save();
+  if(activeId===s.id)chatTitle.textContent=s.title;
+  renderHist();
+  renderManageList();
+  closeRenamePopup();
+});
+renameOverlay.addEventListener("click",e=>{if(e.target===renameOverlay)closeRenamePopup();});
+
+const archiveOverlay=document.getElementById("archive-overlay");
+function openArchivePopup(){
+  document.getElementById("archive-body").textContent=`Download ${sessions.length} chat(s) as a JSON archive.`;
+  archiveOverlay.classList.add("open");
+}
+function closeArchivePopup(){archiveOverlay.classList.remove("open");}
+document.getElementById("archive-cancel").addEventListener("click",closeArchivePopup);
+document.getElementById("archive-save").addEventListener("click",()=>{archiveChats();closeArchivePopup();});
+archiveOverlay.addEventListener("click",e=>{if(e.target===archiveOverlay)closeArchivePopup();});
+
+const trashOverlay=document.getElementById("trash-overlay");
+function openTrashPopup(mode,id=null){
+  trashMode={mode,id};
+  const body=document.getElementById("trash-body");
+  body.textContent=mode==="one"?"Delete this chat permanently? This cannot be undone.":"Delete all chats permanently? This cannot be undone.";
+  trashOverlay.classList.add("open");
+}
+function closeTrashPopup(){trashOverlay.classList.remove("open");trashMode=null;}
+document.getElementById("trash-cancel").addEventListener("click",closeTrashPopup);
+document.getElementById("trash-confirm").addEventListener("click",()=>{
+  if(!trashMode)return;
+  if(trashMode.mode==="one"&&trashMode.id){
+    deleteSession(trashMode.id);
+  }else{
+    clearAll();
+    settingsOverlay.classList.remove("open");
+    manageOverlay.classList.remove("open");
+  }
+  closeTrashPopup();
+});
+trashOverlay.addEventListener("click",e=>{if(e.target===trashOverlay)closeTrashPopup();});
+
+// â”€â”€ History Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function renderHist(){
   histList.innerHTML="";
   if(!sessions.length){
@@ -668,13 +815,13 @@ function renderHist(){
     el.addEventListener("click",e=>{if(e.target.closest(".hi-del"))return;loadSession(s.id);});
     el.querySelector(".hi-del").addEventListener("click",e=>{
       e.stopPropagation();
-      showConfirm("Delete Chat","Delete this chat? This cannot be undone.",()=>deleteSession(s.id));
+      openTrashPopup("one",s.id);
     });
     histList.appendChild(el);
   });
 }
 
-// ── Session Management ─────────────────────────────────────
+// â”€â”€ Session Management â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function newChat(){
   const id=genId();
   sessions.push({id,title:"New Chat",model:activeModel,messages:[]});
@@ -708,7 +855,7 @@ function clearAll(){
   updateSettingsCounts();
 }
 
-// ── Render Chat ────────────────────────────────────────────
+// â”€â”€ Render Chat â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function renderChat(){
   chatArea.innerHTML="";
   const s=getActive();
@@ -724,7 +871,7 @@ function appendBubble(role,text,engine,thinking,anim=true){
   if(!anim)row.style.animation="none";
   const isUser=role==="user";
   const thinkTag=(!isUser&&thinking)?`<span class="thinking-tag">ThinkingMini V0.3</span>`:"";
-  const engBadge=!isUser&&engine?`<div class="eng-badge">${engine==="ollama"?"🟢 llama3":"⚡ rule"}</div>`:"";
+  const engBadge=!isUser&&engine?`<div class="eng-badge">${engine==="ollama"?"ðŸŸ¢ llama3":"âš¡ rule"}</div>`:"";
   row.innerHTML=`
     <div class="msg-av ${isUser?"user":"ai"}">${isUser?"Y":"G"}</div>
     <div class="msg-body">
@@ -745,14 +892,14 @@ function addTyping(){
 }
 function removeTyping(){const el=document.getElementById("typing-row");if(el)el.remove();}
 
-// ── Send ───────────────────────────────────────────────────
+// â”€â”€ Send â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function send(){
   const text=promptInput.value.trim();
   if(!text)return;
   if(!activeId)newChat();
   const s=getActive();
   promptInput.value="";autoResize();
-  sendBtn.disabled=true;setDot("yellow","thinking…");
+  sendBtn.disabled=true;setDot("yellow","thinkingâ€¦");
 
   s.messages.push({role:"user",text});
   if(s.title==="New Chat"||!s.title){s.title=titleFrom(text);chatTitle.textContent=s.title;}
@@ -766,7 +913,7 @@ async function send(){
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({prompt:text,model:activeModel}),
-      signal:AbortSignal.timeout(25000)
+      signal:AbortSignal.timeout(90000)
     });
     removeTyping();
     if(!res.ok)throw new Error("Server "+res.status);
@@ -777,7 +924,7 @@ async function send(){
     setDot("green","online");
   } catch(err){
     removeTyping();
-    appendBubble("ai","Connection failed — is server.py running?","error",false);
+    appendBubble("ai","Connection failed â€” is server.py running?","error",false);
     setDot("red","offline");
   }
   sendBtn.disabled=false;promptInput.focus();
@@ -791,10 +938,10 @@ promptInput.addEventListener("input",autoResize);
 promptInput.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}});
 sendBtn.addEventListener("click",send);
 
-// ── New Chat ───────────────────────────────────────────────
+// â”€â”€ New Chat â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 document.getElementById("btn-new").addEventListener("click",newChat);
 
-// ── Archive ────────────────────────────────────────────────
+// â”€â”€ Archive â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function archiveChats(){
   if(!sessions.length){alert("No chat history to archive.");return;}
   const data=JSON.stringify({exported:new Date().toISOString(),sessions},null,2);
@@ -806,7 +953,7 @@ function archiveChats(){
   document.body.removeChild(a);URL.revokeObjectURL(url);
 }
 
-// ── Settings ───────────────────────────────────────────────
+// â”€â”€ Settings â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function updateSettingsCounts(){
   document.getElementById("s-chats").textContent=sessions.length+" chat"+(sessions.length!==1?"s":"");
   settingsModel.textContent=activeModel;
@@ -821,14 +968,14 @@ document.getElementById("settings-x").addEventListener("click",()=>settingsOverl
 document.getElementById("settings-close-btn").addEventListener("click",()=>settingsOverlay.classList.remove("open"));
 settingsOverlay.addEventListener("click",e=>{if(e.target===settingsOverlay)settingsOverlay.classList.remove("open");});
 
-document.getElementById("btn-archive").addEventListener("click",archiveChats);
-document.getElementById("btn-clear-settings").addEventListener("click",()=>{
-  showConfirm("Clear All History","Delete all chats permanently? This cannot be undone.",()=>{
-    clearAll();settingsOverlay.classList.remove("open");
-  });
+document.getElementById("btn-edit-active").addEventListener("click",()=>{
+  if(!activeId){alert("No active chat selected.");return;}
+  openRenamePopup(activeId);
 });
+document.getElementById("btn-archive").addEventListener("click",openArchivePopup);
+document.getElementById("btn-clear-settings").addEventListener("click",()=>openTrashPopup("all"));
 
-// ── Manage History ─────────────────────────────────────────
+// â”€â”€ Manage History â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const manageOverlay=document.getElementById("manage-overlay");
 const manageList=document.getElementById("manage-list");
 
@@ -839,12 +986,20 @@ function renderManageList(){
     const el=document.createElement("div");el.className="mi";
     el.innerHTML=`<span class="mi-title">${escHtml(s.title)}</span>
       <span class="mi-model">${s.model||"g0.5-mini"}</span>
-      <button class="mi-del" data-id="${s.id}">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-      </button>`;
-    el.querySelector(".mi-del").addEventListener("click",()=>{
-      showConfirm("Delete Chat","Delete this chat permanently?",()=>deleteSession(s.id));
-    });
+      <div class="mi-actions">
+        <button class="icon-btn edit" title="Rename chat" data-action="edit">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+        </button>
+        <button class="icon-btn archive" title="Archive all chats" data-action="archive">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8h14v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M10 12h4"/></svg>
+        </button>
+        <button class="icon-btn trash" title="Delete chat" data-action="trash">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+        </button>
+      </div>`;
+    el.querySelector('[data-action="edit"]').addEventListener("click",()=>openRenamePopup(s.id));
+    el.querySelector('[data-action="archive"]').addEventListener("click",openArchivePopup);
+    el.querySelector('[data-action="trash"]').addEventListener("click",()=>openTrashPopup("one",s.id));
     manageList.appendChild(el);
   });
 }
@@ -853,16 +1008,15 @@ document.getElementById("btn-manage").addEventListener("click",()=>{renderManage
 document.getElementById("manage-x").addEventListener("click",()=>manageOverlay.classList.remove("open"));
 document.getElementById("manage-done").addEventListener("click",()=>manageOverlay.classList.remove("open"));
 manageOverlay.addEventListener("click",e=>{if(e.target===manageOverlay)manageOverlay.classList.remove("open");});
-document.getElementById("manage-clear-all").addEventListener("click",()=>{
-  showConfirm("Clear All History","Delete all chats permanently? This cannot be undone.",()=>{
-    clearAll();manageOverlay.classList.remove("open");
-  });
-});
+document.getElementById("manage-clear-all").addEventListener("click",()=>openTrashPopup("all"));
 
-// ── Init ───────────────────────────────────────────────────
+// â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 renderHist();
 if(sessions.length){loadSession(sessions[sessions.length-1].id);}
 else{chatArea.appendChild(emptyState);}
 </script>
 </body>
 </html>
+
+
+

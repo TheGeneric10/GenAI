@@ -1,12 +1,13 @@
 """
 ai.py - GenAI Core Router v0.26.2.0
-Routes prompts to the selected model and queries Ollama first.
+Routes prompts to the selected model and queries remote Ollama first.
 Falls back to lightweight rule handlers if Ollama is unavailable.
 """
 
 import json
 import os
 import sys
+import urllib.error
 import urllib.request
 
 
@@ -18,19 +19,20 @@ import g05_nano as nano
 
 
 def _normalize_ollama_base_url(raw_url):
-    base = (raw_url or "http://127.0.0.1:11434").strip().rstrip("/")
+    base = (raw_url or "").strip().rstrip("/")
     if not base:
-        return "http://127.0.0.1:11434"
+        return ""
     if "/api/" in base:
         return base.split("/api/", 1)[0]
     return base
 
 
 OLLAMA_BASE_URL = _normalize_ollama_base_url(os.getenv("OLLAMA_BASE_URL"))
-OLLAMA_URL = f"{OLLAMA_BASE_URL}/api/generate"
+OLLAMA_URL = f"{OLLAMA_BASE_URL}/api/generate" if OLLAMA_BASE_URL else ""
 OLLAMA_API_KEY = os.getenv("OLLAMA_API_KEY", "").strip()
 OLLAMA_AUTH_SCHEME = os.getenv("OLLAMA_AUTH_SCHEME", "Bearer").strip()
 OLLAMA_KEY_HEADER = os.getenv("OLLAMA_KEY_HEADER", "Authorization").strip()
+LAST_OLLAMA_ERROR = ""
 
 MODELS = {
     "g0.5-nano": nano,
@@ -39,6 +41,11 @@ MODELS = {
 }
 
 DEFAULT_MODEL = "g0.5-mini"
+
+
+def _system_prompt_override_for_model(model_id):
+    env_key = "GENAI_PROMPT_" + model_id.replace(".", "").replace("-", "_").upper()
+    return os.getenv(env_key, "").strip()
 
 
 def _build_ollama_headers():
@@ -52,6 +59,8 @@ def _build_ollama_headers():
 
 
 def ollama_health_check(timeout=2):
+    if not OLLAMA_BASE_URL:
+        return False
     status_url = f"{OLLAMA_BASE_URL}/"
     req = urllib.request.Request(status_url, headers=_build_ollama_headers(), method="GET")
     try:
@@ -61,16 +70,62 @@ def ollama_health_check(timeout=2):
         return False
 
 
+def _fetch_ollama_tags(timeout=6):
+    if not OLLAMA_BASE_URL:
+        return []
+    tags_url = f"{OLLAMA_BASE_URL}/api/tags"
+    req = urllib.request.Request(tags_url, headers=_build_ollama_headers(), method="GET")
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            models = data.get("models", [])
+            return [m.get("name", "") for m in models if m.get("name")]
+    except Exception:
+        return []
+
+
+def model_health_report():
+    tags = _fetch_ollama_tags()
+    tag_set = set(tags)
+    report = {
+        "ollama_base_url": OLLAMA_BASE_URL or "not_configured",
+        "ollama_configured": bool(OLLAMA_BASE_URL),
+        "ollama_reachable": ollama_health_check(timeout=2),
+        "available_tags": tags,
+        "models": {},
+        "last_error": LAST_OLLAMA_ERROR,
+    }
+
+    for model_id, mod in MODELS.items():
+        preferred = getattr(mod, "OLLAMA_MODELS", [mod.OLLAMA_MODEL])
+        matched = [m for m in preferred if m in tag_set]
+        report["models"][model_id] = {
+            "preferred": preferred,
+            "matched": matched,
+            "usable": bool(matched),
+            "max_tokens": getattr(mod, "MAX_TOKENS", 0),
+        }
+    return report
+
+
 def _query_ollama(prompt, model_module, thinking_active=False):
     """
     Send a prompt to local Ollama using the selected model's settings.
     Returns (response_text, thinking_active).
     """
+    global LAST_OLLAMA_ERROR
+    if not OLLAMA_URL:
+        LAST_OLLAMA_ERROR = "OLLAMA_BASE_URL is not configured"
+        return None, False
+
     if hasattr(model_module, "get_system_prompt"):
         system, thinking_active = model_module.get_system_prompt(prompt)
     else:
         system = model_module.SYSTEM_PROMPT
         thinking_active = False
+    override = _system_prompt_override_for_model(model_module.MODEL_ID)
+    if override:
+        system = override
 
     model_names = getattr(model_module, "OLLAMA_MODELS", [model_module.OLLAMA_MODEL])
     options = {
@@ -103,8 +158,17 @@ def _query_ollama(prompt, model_module, thinking_active=False):
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
                 text = data.get("response", "").strip()
+                LAST_OLLAMA_ERROR = ""
                 return text, thinking_active
-        except Exception:
+        except urllib.error.HTTPError as e:
+            try:
+                body = e.read().decode("utf-8", errors="replace")
+            except Exception:
+                body = ""
+            LAST_OLLAMA_ERROR = f"{e.code} {body[:180]}".strip()
+            continue
+        except Exception as e:
+            LAST_OLLAMA_ERROR = str(e)
             continue
 
     return None, False

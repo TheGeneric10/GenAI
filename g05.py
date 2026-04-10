@@ -22,7 +22,8 @@ ThinkingMini V0.3:
 MODEL_ID      = "g0.5"
 MODEL_VERSION = "0.26.2.0"
 OLLAMA_MODEL  = "llama3"
-MAX_TOKENS    = 400
+OLLAMA_MODELS = ["llama3.2:1b", "llama3.2:3b", "llama3.2", "llama3", "llama3:latest"]
+MAX_TOKENS    = 768
 TEMPERATURE   = 0.65
 TOP_K         = 50
 TOP_P         = 0.92
@@ -96,4 +97,4 @@ def rule_response(prompt):
         return {"intent": "math", "response": f"Result: {result}"}
     except Exception:
         pass
-    return {"intent": "offline", "response": "Ollama is offline. g0.5 requires Ollama for full functionality."}
+    return {"intent": "offline", "response": "Model unavailable. Configure remote Ollama and use llama3.2:1b or 3b for g0.5."}
