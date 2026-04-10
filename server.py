@@ -1,13 +1,13 @@
 """
-server.py — GenAI Web Server  v0.26.2.0
+server.py - GenAI Web Server v0.26.2.0
 Flask REST API. Routes to ai.py model router.
 """
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import ai
+import os
 import time
-import urllib.request
 
 app = Flask(__name__)
 CORS(app)
@@ -24,34 +24,31 @@ def chat():
     data = request.get_json(silent=True)
     if not data or "prompt" not in data:
         return jsonify({"error": "Missing 'prompt'"}), 400
-    prompt   = str(data.get("prompt", ""))[:600]
+    prompt = str(data.get("prompt", ""))[:600]
     model_id = str(data.get("model", ai.DEFAULT_MODEL))
-    result   = ai.query(prompt, model_id)
+    result = ai.query(prompt, model_id)
     return jsonify(result)
 
 
 @app.route("/status", methods=["GET"])
 def status():
     uptime = round(time.time() - START_TIME, 1)
-    ollama_up = False
-    try:
-        req = urllib.request.Request("http://127.0.0.1:11434", method="GET")
-        with urllib.request.urlopen(req, timeout=2):
-            ollama_up = True
-    except Exception:
-        pass
+    ollama_up = ai.ollama_health_check(timeout=2)
     return jsonify({
-        "status":          "online",
-        "version":         "0.26.2.0",
-        "uptime_seconds":  uptime,
-        "ollama":          ollama_up,
-        "default_model":   ai.DEFAULT_MODEL,
-        "models":          list(ai.MODELS.keys()),
+        "status": "online",
+        "version": "0.26.2.0",
+        "uptime_seconds": uptime,
+        "ollama": ollama_up,
+        "ollama_base_url": ai.OLLAMA_BASE_URL,
+        "default_model": ai.DEFAULT_MODEL,
+        "models": list(ai.MODELS.keys()),
     })
 
 
 if __name__ == "__main__":
+    host = os.getenv("GENAI_HOST", "0.0.0.0")
+    port = int(os.getenv("GENAI_PORT", "5000"))
     print("=" * 44)
-    print("  GenAI v0.26.2.0  — http://127.0.0.1:5000")
+    print(f"  GenAI v0.26.2.0 - http://{host}:{port}")
     print("=" * 44)
-    app.run(host="127.0.0.1", port=5000, debug=False)
+    app.run(host=host, port=port, debug=False)

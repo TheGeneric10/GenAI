@@ -17,7 +17,20 @@ import g05_mini as mini
 import g05_nano as nano
 
 
-OLLAMA_URL = "http://127.0.0.1:11434/api/generate"
+def _normalize_ollama_base_url(raw_url):
+    base = (raw_url or "http://127.0.0.1:11434").strip().rstrip("/")
+    if not base:
+        return "http://127.0.0.1:11434"
+    if "/api/" in base:
+        return base.split("/api/", 1)[0]
+    return base
+
+
+OLLAMA_BASE_URL = _normalize_ollama_base_url(os.getenv("OLLAMA_BASE_URL"))
+OLLAMA_URL = f"{OLLAMA_BASE_URL}/api/generate"
+OLLAMA_API_KEY = os.getenv("OLLAMA_API_KEY", "").strip()
+OLLAMA_AUTH_SCHEME = os.getenv("OLLAMA_AUTH_SCHEME", "Bearer").strip()
+OLLAMA_KEY_HEADER = os.getenv("OLLAMA_KEY_HEADER", "Authorization").strip()
 
 MODELS = {
     "g0.5-nano": nano,
@@ -26,6 +39,26 @@ MODELS = {
 }
 
 DEFAULT_MODEL = "g0.5-mini"
+
+
+def _build_ollama_headers():
+    headers = {"Content-Type": "application/json"}
+    if OLLAMA_API_KEY:
+        if OLLAMA_KEY_HEADER.lower() == "authorization":
+            headers["Authorization"] = f"{OLLAMA_AUTH_SCHEME} {OLLAMA_API_KEY}".strip()
+        else:
+            headers[OLLAMA_KEY_HEADER] = OLLAMA_API_KEY
+    return headers
+
+
+def ollama_health_check(timeout=2):
+    status_url = f"{OLLAMA_BASE_URL}/"
+    req = urllib.request.Request(status_url, headers=_build_ollama_headers(), method="GET")
+    try:
+        with urllib.request.urlopen(req, timeout=timeout):
+            return True
+    except Exception:
+        return False
 
 
 def _query_ollama(prompt, model_module, thinking_active=False):
@@ -62,7 +95,7 @@ def _query_ollama(prompt, model_module, thinking_active=False):
         req = urllib.request.Request(
             OLLAMA_URL,
             data=payload,
-            headers={"Content-Type": "application/json"},
+            headers=_build_ollama_headers(),
             method="POST",
         )
 
