@@ -34,15 +34,20 @@ def chat():
 @app.route("/status", methods=["GET"])
 def status():
     uptime = round(time.time() - START_TIME, 1)
-    ollama_up = ai.ollama_health_check(timeout=2)
+    cloud_up = ai.ollama_health_check(timeout=2)
     return jsonify({
         "status": "online",
         "version": "0.26.2.0",
         "uptime_seconds": uptime,
-        "ollama": ollama_up,
-        "ollama_configured": bool(ai.OLLAMA_BASE_URL),
-        "ollama_base_url": ai.OLLAMA_BASE_URL,
-        "ollama_model": ai.OLLAMA_DEFAULT_MODEL,
+        "provider": "fireworks",
+        "cloud": cloud_up,
+        "cloud_configured": bool(ai.FIREWORKS_API_KEY),
+        "cloud_base_url": ai.FIREWORKS_BASE_URL,
+        "cloud_model": ai.FIREWORKS_MODEL,
+        "ollama": cloud_up,
+        "ollama_configured": bool(ai.FIREWORKS_API_KEY),
+        "ollama_base_url": ai.FIREWORKS_BASE_URL,
+        "ollama_model": ai.FIREWORKS_MODEL,
         "default_model": ai.DEFAULT_MODEL,
         "models": list(ai.MODELS.keys()),
     })

@@ -1,12 +1,14 @@
 """
 ai.py - GenAI Core Router v0.26.2.0
-Routes prompts to the selected model and queries remote Ollama first.
-Falls back to lightweight rule handlers if Ollama is unavailable.
+Routes prompts to Fireworks Cloud first.
+Falls back to lightweight rule handlers if cloud is unavailable.
 """
 
+import json
 import os
 import sys
-from ollama import Client
+import urllib.error
+import urllib.request
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "models"))
@@ -16,24 +18,21 @@ import g05_mini as mini
 import g05_nano as nano
 
 
-def _normalize_ollama_base_url(raw_url):
+def _normalize_base_url(raw_url):
     base = (raw_url or "").strip().rstrip("/")
-    if not base:
-        return ""
-    if "/api/" in base:
-        return base.split("/api/", 1)[0]
-    return base
+    return base or "https://api.fireworks.ai/inference/v1"
 
 
-OLLAMA_BASE_URL = _normalize_ollama_base_url(os.getenv("OLLAMA_BASE_URL"))
-OLLAMA_API_KEY = os.getenv("OLLAMA_API_KEY", "").strip()
-OLLAMA_AUTH_SCHEME = os.getenv("OLLAMA_AUTH_SCHEME", "Bearer").strip()
-OLLAMA_KEY_HEADER = os.getenv("OLLAMA_KEY_HEADER", "Authorization").strip()
-OLLAMA_DEFAULT_MODEL = os.getenv("OLLAMA_MODEL", "gpt-oss:120b-cloud").strip() or "gpt-oss:120b-cloud"
+FIREWORKS_BASE_URL = _normalize_base_url(os.getenv("FIREWORKS_BASE_URL"))
+FIREWORKS_API_KEY = os.getenv("FIREWORKS_API_KEY", "").strip()
+FIREWORKS_MODEL = os.getenv(
+    "FIREWORKS_MODEL",
+    "accounts/fireworks/models/llama-v3p1-8b-instruct",
+).strip() or "accounts/fireworks/models/llama-v3p1-8b-instruct"
 GENAI_MAX_PROMPT_CHARS = int(os.getenv("GENAI_MAX_PROMPT_CHARS", "2000"))
 GENAI_MAX_HISTORY_MESSAGES = int(os.getenv("GENAI_MAX_HISTORY_MESSAGES", "12"))
 GENAI_DETERMINISTIC_SEED = int(os.getenv("GENAI_DETERMINISTIC_SEED", "42"))
-LAST_OLLAMA_ERROR = ""
+LAST_PROVIDER_ERROR = ""
 
 MODELS = {
     "g0.5-nano": nano,
@@ -49,74 +48,72 @@ def _system_prompt_override_for_model(model_id):
     return os.getenv(env_key, "").strip()
 
 
-def _build_ollama_headers():
-    headers = {}
-    if OLLAMA_API_KEY:
-        if OLLAMA_KEY_HEADER.lower() == "authorization":
-            headers["Authorization"] = f"{OLLAMA_AUTH_SCHEME} {OLLAMA_API_KEY}".strip()
-        else:
-            headers[OLLAMA_KEY_HEADER] = OLLAMA_API_KEY
+def _build_headers():
+    headers = {"Content-Type": "application/json"}
+    if FIREWORKS_API_KEY:
+        headers["Authorization"] = f"Bearer {FIREWORKS_API_KEY}"
     return headers
 
 
-def _get_ollama_client():
-    if not OLLAMA_BASE_URL:
-        return None
-    return Client(host=OLLAMA_BASE_URL, headers=_build_ollama_headers())
+def _api_request(path, payload=None, timeout=8):
+    url = f"{FIREWORKS_BASE_URL}{path}"
+    data = None
+    method = "GET"
+    if payload is not None:
+        data = json.dumps(payload).encode("utf-8")
+        method = "POST"
+    req = urllib.request.Request(url, data=data, headers=_build_headers(), method=method)
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return json.loads(resp.read().decode("utf-8"))
 
 
 def ollama_health_check(timeout=2):
-    if not OLLAMA_BASE_URL:
+    if not FIREWORKS_API_KEY:
         return False
     try:
-        client = _get_ollama_client()
-        if client is None:
-            return False
-        client.list()
+        _api_request("/models", timeout=timeout)
         return True
     except Exception:
         return False
 
 
-def _fetch_ollama_tags(timeout=6):
-    if not OLLAMA_BASE_URL:
+def _fetch_model_tags(timeout=6):
+    if not FIREWORKS_API_KEY:
         return []
     try:
-        client = _get_ollama_client()
-        if client is None:
-            return []
-        data = client.list()
-        models = data.get("models", []) if isinstance(data, dict) else []
-        return [m.get("name", "") for m in models if isinstance(m, dict) and m.get("name")]
+        data = _api_request("/models", timeout=timeout)
+        models = data.get("data", []) if isinstance(data, dict) else []
+        return [m.get("id", "") for m in models if isinstance(m, dict) and m.get("id")]
     except Exception:
         return []
 
 
 def model_health_report():
-    tags = _fetch_ollama_tags()
+    tags = _fetch_model_tags()
     tag_set = set(tags)
     report = {
-        "ollama_base_url": OLLAMA_BASE_URL or "not_configured",
-        "ollama_model": OLLAMA_DEFAULT_MODEL,
-        "ollama_configured": bool(OLLAMA_BASE_URL),
-        "ollama_reachable": ollama_health_check(timeout=2),
-        "available_tags": tags,
+        "provider": "fireworks",
+        "fireworks_base_url": FIREWORKS_BASE_URL,
+        "fireworks_model": FIREWORKS_MODEL,
+        "fireworks_configured": bool(FIREWORKS_API_KEY),
+        "fireworks_reachable": ollama_health_check(timeout=2),
+        "available_models": tags,
         "limits": {
             "max_prompt_chars": GENAI_MAX_PROMPT_CHARS,
             "max_history_messages": GENAI_MAX_HISTORY_MESSAGES,
             "seed": GENAI_DETERMINISTIC_SEED,
         },
         "models": {},
-        "last_error": LAST_OLLAMA_ERROR,
+        "last_error": LAST_PROVIDER_ERROR,
     }
 
     for model_id, mod in MODELS.items():
-        preferred = [OLLAMA_DEFAULT_MODEL]
+        preferred = [FIREWORKS_MODEL]
         matched = [m for m in preferred if m in tag_set] if tags else []
         report["models"][model_id] = {
             "preferred": preferred,
             "matched": matched,
-            "usable": report["ollama_reachable"] and bool(OLLAMA_DEFAULT_MODEL),
+            "usable": report["fireworks_reachable"] and bool(FIREWORKS_MODEL),
             "max_tokens": getattr(mod, "MAX_TOKENS", 0),
         }
     return report
@@ -142,15 +139,10 @@ def _normalize_messages(prompt, messages):
     return normalized
 
 
-def _query_ollama(prompt, model_module, messages=None, thinking_active=False):
-    """
-    Send a prompt to local Ollama using the selected model's settings.
-    Returns (response_text, thinking_active).
-    """
-    global LAST_OLLAMA_ERROR
-    client = _get_ollama_client()
-    if client is None:
-        LAST_OLLAMA_ERROR = "OLLAMA_BASE_URL is not configured"
+def _query_cloud(prompt, model_module, messages=None, thinking_active=False):
+    global LAST_PROVIDER_ERROR
+    if not FIREWORKS_API_KEY:
+        LAST_PROVIDER_ERROR = "FIREWORKS_API_KEY is not configured"
         return None, False
 
     if hasattr(model_module, "get_system_prompt"):
@@ -158,6 +150,7 @@ def _query_ollama(prompt, model_module, messages=None, thinking_active=False):
     else:
         system = model_module.SYSTEM_PROMPT
         thinking_active = False
+
     override = _system_prompt_override_for_model(model_module.MODEL_ID)
     if override:
         system = override
@@ -168,38 +161,34 @@ def _query_ollama(prompt, model_module, messages=None, thinking_active=False):
     elif chat_messages:
         chat_messages[0]["content"] = system
 
-    options = {
-        "num_predict": model_module.MAX_TOKENS,
+    payload = {
+        "model": FIREWORKS_MODEL,
+        "messages": chat_messages,
+        "max_tokens": model_module.MAX_TOKENS,
         "temperature": model_module.TEMPERATURE,
-        "top_k": model_module.TOP_K,
         "top_p": model_module.TOP_P,
-        "repeat_penalty": 1.1,
+        "stream": False,
         "seed": GENAI_DETERMINISTIC_SEED,
     }
-    options.update(getattr(model_module, "OLLAMA_OPTIONS", {}))
 
     try:
-        stream = client.chat(
-            model=OLLAMA_DEFAULT_MODEL,
-            messages=chat_messages,
-            stream=True,
-            options=options,
-        )
-        parts = []
-        for part in stream:
-            if not isinstance(part, dict):
-                continue
-            message = part.get("message", {}) or {}
-            content = message.get("content", "")
-            if content:
-                parts.append(content)
-        text = "".join(parts).strip()
-        if text:
-            LAST_OLLAMA_ERROR = ""
-            return text, thinking_active
-        LAST_OLLAMA_ERROR = "Empty response from Ollama Cloud"
+        data = _api_request("/chat/completions", payload=payload, timeout=30)
+        choices = data.get("choices", []) if isinstance(data, dict) else []
+        if choices:
+            message = choices[0].get("message", {}) if isinstance(choices[0], dict) else {}
+            text = str(message.get("content", "")).strip()
+            if text:
+                LAST_PROVIDER_ERROR = ""
+                return text, thinking_active
+        LAST_PROVIDER_ERROR = "Empty response from Fireworks"
+    except urllib.error.HTTPError as e:
+        try:
+            body = e.read().decode("utf-8", errors="replace")
+        except Exception:
+            body = ""
+        LAST_PROVIDER_ERROR = f"{e.code} {body[:180]}".strip()
     except Exception as e:
-        LAST_OLLAMA_ERROR = str(e)
+        LAST_PROVIDER_ERROR = str(e)
 
     return None, False
 
@@ -207,7 +196,6 @@ def _query_ollama(prompt, model_module, messages=None, thinking_active=False):
 def query(prompt, model_id=None, messages=None):
     """
     Main entry point.
-
     Args:
         prompt: User prompt string
         model_id: "g0.5-nano" | "g0.5-mini" | "g0.5"
@@ -225,12 +213,12 @@ def query(prompt, model_id=None, messages=None):
     model_id = model_id if model_id in MODELS else DEFAULT_MODEL
     mod = MODELS[model_id]
 
-    reply, thinking = _query_ollama(prompt, mod, messages=messages)
+    reply, thinking = _query_cloud(prompt, mod, messages=messages)
     if reply:
         return {
             "response": reply,
-            "intent": "ollama",
-            "engine": "ollama",
+            "intent": "cloud",
+            "engine": "cloud",
             "model": model_id,
             "thinking": thinking,
         }
@@ -261,3 +249,4 @@ if __name__ == "__main__":
         print(f"\n[{result['model']}]{think_tag} > {prompt}")
         print(f"  [{result['engine']}] {result['response']}")
     print(f"\n{'=' * 55}")
+

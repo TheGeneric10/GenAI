@@ -6,13 +6,11 @@
 <title>GenAI</title>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=Montserrat:wght@600;700&display=swap" rel="stylesheet"/>
 <style>
-/* â”€â”€ Reset â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;width:100%;overflow:hidden;}
 *{-webkit-user-select:none;user-select:none;-webkit-user-drag:none;}
 input,textarea{-webkit-user-select:text;user-select:text;}
 
-/* â”€â”€ Theme Variables â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 :root{
   --bg:#0a0a0a;
   --sidebar:#0f0f0f;
@@ -58,7 +56,6 @@ body.light{
 
 body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex;height:100vh;width:100vw;transition:var(--transition);}
 
-/* â”€â”€ Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #sidebar{
   width:var(--sidebar-w);min-width:var(--sidebar-w);
   background:var(--sidebar);
@@ -107,8 +104,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
 .sb-bottom{padding:8px 10px 12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:2px;}
 .sb-btn{display:flex;align-items:center;gap:9px;background:none;border:none;color:var(--text-muted);font-family:var(--font);font-size:12.5px;cursor:pointer;padding:7px 9px;border-radius:7px;width:100%;text-align:left;transition:var(--transition);}
 .sb-btn:hover{background:var(--sidebar-hover);color:var(--text);}
+.profile-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px;margin-bottom:6px;}
+.profile-main{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.profile-avatar{width:26px;height:26px;border-radius:7px;background:var(--blue-dim);color:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.profile-name{font-size:12px;color:var(--text);font-weight:600;line-height:1.2;}
+.profile-sub{font-size:10px;color:var(--text-muted);line-height:1.2;}
+.credits-pill{font-size:11px;font-family:var(--mono);padding:4px 7px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:#f59e0b;margin-bottom:6px;}
+.profile-actions{display:flex;flex-direction:column;gap:4px;}
+.profile-actions .sb-btn{padding:6px 8px;font-size:11.5px;}
 
-/* â”€â”€ Main â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #main{flex:1;display:flex;flex-direction:column;height:100vh;min-width:0;}
 
 /* Topbar */
@@ -168,7 +172,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
 .dot.yellow{background:var(--dot-yellow);box-shadow:0 0 6px var(--dot-yellow);}
 .dot.red   {background:var(--dot-red);  box-shadow:0 0 6px var(--dot-red);}
 
-/* â”€â”€ Chat Area â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #chat-area{flex:1;overflow-y:auto;padding:28px 0;display:flex;flex-direction:column;}
 #chat-area::-webkit-scrollbar{width:4px;}
 #chat-area::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
@@ -204,7 +207,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
 .chip{background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:18px;padding:5px 13px;font-size:12px;cursor:pointer;transition:var(--transition);font-family:var(--font);}
 .chip:hover{background:var(--sidebar-hover);border-color:var(--blue);color:var(--text);}
 
-/* â”€â”€ Input â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #input-wrap{padding:12px 20px 16px;flex-shrink:0;border-top:1px solid var(--border);background:var(--bg);transition:var(--transition);}
 
 #input-box{
@@ -238,7 +240,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
 .input-meta{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;font-size:10.5px;color:var(--text-dim);max-width:820px;margin-left:auto;margin-right:auto;}
 .engine-pill{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1px 8px;font-size:10px;}
 
-/* â”€â”€ Modals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:300;backdrop-filter:blur(4px);}
 .overlay.open{display:flex;}
 
@@ -327,18 +328,25 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
 }
 .popup-input:focus{border-color:rgba(59,130,246,.5);}
 .popup-foot{display:flex;gap:8px;}
+#auth-modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;width:420px;max-width:92vw;padding:20px;}
+.auth-tabs{display:flex;gap:8px;margin-bottom:12px;}
+.auth-tab{flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);font-size:12px;cursor:pointer;}
+.auth-tab.active{background:var(--blue-dim);color:var(--text);border-color:rgba(37,99,235,.4);}
+.auth-panel{display:none;}
+.auth-panel.open{display:block;}
+.auth-stack{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.auth-note{font-size:11px;color:var(--text-muted);margin-bottom:10px;line-height:1.4;}
 </style>
 </head>
 <body>
 
-<!-- â”€â”€ Sidebar â”€â”€ -->
 <aside id="sidebar">
   <div class="sb-top">
     <div class="brand-row">
       <div class="brand-icon">G</div>
       <div>
         <div class="brand-title"><span class="brand-name">GenAI</span><span class="brand-beta">beta</span></div>
-        <div class="brand-ver">v0.26.2.0 Â· g0.5-nano</div>
+        <div class="brand-ver">v0.26.2.0 · g0.5-nano</div>
       </div>
     </div>
     <button class="btn-new" id="btn-new">
@@ -349,6 +357,20 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
   </div>
   <div id="hist-list"></div>
   <div class="sb-bottom">
+    <div class="profile-card" id="profile-card">
+      <div class="profile-main">
+        <div class="profile-avatar" id="profile-avatar">G</div>
+        <div>
+          <div class="profile-name" id="profile-name">Guest</div>
+          <div class="profile-sub" id="profile-sub">Not signed in</div>
+        </div>
+      </div>
+      <div class="credits-pill" id="credits-pill">Credits: 2.00</div>
+      <div class="profile-actions">
+        <button class="sb-btn" id="btn-auth-open">Sign In / Sign Up</button>
+        <button class="sb-btn" id="btn-auth-logout" style="display:none;">Sign Out</button>
+      </div>
+    </div>
     <button class="sb-btn" id="btn-manage">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
       Manage History
@@ -360,7 +382,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
   </div>
 </aside>
 
-<!-- â”€â”€ Main â”€â”€ -->
 <main id="main">
   <!-- Topbar -->
   <div id="topbar">
@@ -379,21 +400,21 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
             <div class="mo-dot md-nano"></div>
             <div class="mo-info">
               <div class="mo-name">g0.5-nano</div>
-              <div class="mo-desc">Ultra-light Â· Easyâ†’Moderate Â· Rule-first Â· Fastest</div>
+              <div class="mo-desc">Ultra-light · Easy->Moderate · Rule-first · Fastest</div>
             </div>
           </div>
           <div class="model-option selected" data-model="g0.5-mini">
             <div class="mo-dot md-mini"></div>
             <div class="mo-info">
               <div class="mo-name">g0.5-mini</div>
-              <div class="mo-desc">Default Â· Easyâ†’High Â· Essays, strategies, light coding</div>
+              <div class="mo-desc">Default · Easy->High · Essays, strategies, light coding</div>
             </div>
           </div>
           <div class="model-option" data-model="g0.5">
             <div class="mo-dot md-pro"></div>
             <div class="mo-info">
               <div class="mo-name">g0.5</div>
-              <div class="mo-desc">Pro Â· Highâ†’Very High Â· Coding Â· ThinkingMini V0.3</div>
+              <div class="mo-desc">Pro · High->Very High · Coding · ThinkingMini V0.3</div>
             </div>
           </div>
         </div>
@@ -402,7 +423,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
 
     <div class="status-pill">
       <div class="dot" id="dot"></div>
-      <span id="dot-label">connectingâ€¦</span>
+      <span id="dot-label">connecting...</span>
     </div>
   </div>
 
@@ -412,14 +433,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
       <div class="es-icon">
         <svg width="22" height="22" fill="none" stroke="var(--blue)" stroke-width="1.8" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </div>
-      <h2>How can I help?</h2>
+      <h2>How can I help</h2>
       <p>Select a model above and start chatting. GenAI is lightweight and fast.</p>
       <div class="chips">
-        <div class="chip" onclick="fillPrompt('Hello! How are you?')">Say hello</div>
+        <div class="chip" onclick="fillPrompt('Hello! How are you')">Say hello</div>
         <div class="chip" onclick="fillPrompt('Tell me a joke')">Tell a joke</div>
-        <div class="chip" onclick="fillPrompt('What is 256 * 3.14?')">Quick math</div>
+        <div class="chip" onclick="fillPrompt('What is 256 * 3.14')">Quick math</div>
         <div class="chip" onclick="fillPrompt('Write a short essay intro about technology')">Essay help</div>
-        <div class="chip" onclick="fillPrompt('What time is it?')">Time</div>
+        <div class="chip" onclick="fillPrompt('What time is it')">Time</div>
       </div>
     </div>
   </div>
@@ -427,25 +448,24 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
   <!-- Input -->
   <div id="input-wrap">
     <div id="input-box">
-      <textarea id="prompt-input" rows="1" placeholder="Message GenAIâ€¦"></textarea>
+      <textarea id="prompt-input" rows="1" placeholder="Message GenAI..."></textarea>
       <button id="send-btn">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
     </div>
     <div class="input-meta">
-      <span id="engine-hint" class="engine-pill">connectingâ€¦</span>
-      <span>Â·</span>
+      <span id="engine-hint" class="engine-pill">connecting...</span>
+      <span>·</span>
       <span>GenAI v0.26.2.0</span>
     </div>
   </div>
 </main>
 
-<!-- â”€â”€ Settings Overlay â”€â”€ -->
 <div class="overlay" id="settings-overlay">
   <div id="settings-modal">
     <div class="modal-head">
       <h2>Settings</h2>
-      <button class="modal-x" id="settings-x">Ã—</button>
+      <button class="modal-x" id="settings-x">×</button>
     </div>
 
     <!-- Appearance -->
@@ -492,12 +512,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
         <div class="s-val" id="s-backend">auto</div>
       </div>
       <div class="s-row">
-        <div><div class="s-label">Ollama</div><div class="s-desc">Remote model gateway status</div></div>
-        <div class="s-val" id="s-ollama">checkingâ€¦</div>
+        <div><div class="s-label">Fireworks</div><div class="s-desc">Cloud model gateway status</div></div>
+        <div class="s-val" id="s-ollama">checking...</div>
       </div>
       <div class="s-row">
         <div><div class="s-label">Uptime</div><div class="s-desc">Server uptime</div></div>
-        <div class="s-val" id="s-uptime">â€”</div>
+        <div class="s-val" id="s-uptime">-</div>
       </div>
       <div class="s-row">
         <div><div class="s-label">Version</div><div class="s-desc">GenAI build version</div></div>
@@ -535,12 +555,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
   </div>
 </div>
 
-<!-- â”€â”€ Manage History Overlay â”€â”€ -->
 <div class="overlay" id="manage-overlay">
   <div id="manage-modal">
     <div class="manage-head">
       <h2>Chat History</h2>
-      <button class="modal-x" id="manage-x">Ã—</button>
+      <button class="modal-x" id="manage-x">×</button>
     </div>
     <div id="manage-list"></div>
     <div class="manage-foot">
@@ -550,10 +569,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
   </div>
 </div>
 
-<!-- â”€â”€ Confirm Overlay â”€â”€ -->
 <div class="overlay" id="confirm-overlay">
   <div id="confirm-modal">
-    <h3 id="confirm-title">Are you sure?</h3>
+    <h3 id="confirm-title">Are you sure</h3>
     <p id="confirm-body">This action cannot be undone.</p>
     <div class="cfooter">
       <button class="btn-modal btn-secondary" id="confirm-cancel">Cancel</button>
@@ -596,430 +614,44 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);display:flex
   </div>
 </div>
 
-<script>
-// â”€â”€ Config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const API = "http://127.0.0.1:5000";
+<div class="overlay" id="auth-overlay">
+  <div id="auth-modal">
+    <h3 style="font-size:16px;margin-bottom:10px;">Account Access</h3>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="auth-tab-signin">Sign In</button>
+      <button class="auth-tab" id="auth-tab-signup">Sign Up</button>
+    </div>
+    <div class="auth-panel open" id="auth-panel-signin">
+      <div class="auth-stack">
+        <input class="popup-input" id="signin-email" type="email" placeholder="Email"/>
+        <input class="popup-input" id="signin-password" type="password" placeholder="Password"/>
+      </div>
+      <div class="auth-note">Signed-in accounts auto-save profile, credits, and chats to cloud.</div>
+      <div class="popup-foot">
+        <button class="btn-modal btn-secondary" id="auth-google">Google</button>
+        <button class="btn-modal btn-primary" id="auth-signin">Sign In</button>
+      </div>
+    </div>
+    <div class="auth-panel" id="auth-panel-signup">
+      <div class="auth-stack">
+        <input class="popup-input" id="signup-name" type="text" placeholder="Display name"/>
+        <input class="popup-input" id="signup-email" type="email" placeholder="Email"/>
+        <input class="popup-input" id="signup-password" type="password" placeholder="Password"/>
+      </div>
+      <div class="auth-note">New accounts start with 2.00 credits and receive +1.00 every 8 hours.</div>
+      <div class="popup-foot">
+        <button class="btn-modal btn-secondary" id="auth-cancel">Cancel</button>
+        <button class="btn-modal btn-primary" id="auth-signup">Create Account</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-// â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-let sessions     = JSON.parse(localStorage.getItem("genai_sessions") || "[]");
-let activeId     = null;
-let activeModel  = localStorage.getItem("genai_default_model") || "g0.5-mini";
-let confirmCb    = null;
-let renameTarget = null;
-let trashMode    = null;
-
-// â”€â”€ DOM â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const chatArea    = document.getElementById("chat-area");
-const promptInput = document.getElementById("prompt-input");
-const sendBtn     = document.getElementById("send-btn");
-const dot         = document.getElementById("dot");
-const dotLabel    = document.getElementById("dot-label");
-const chatTitle   = document.getElementById("chat-title");
-const histList    = document.getElementById("hist-list");
-const emptyState  = document.getElementById("empty-state");
-const engineHint  = document.getElementById("engine-hint");
-
-// â”€â”€ Utils â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function save(){localStorage.setItem("genai_sessions",JSON.stringify(sessions));}
-function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
-function getActive(){return sessions.find(s=>s.id===activeId)||null;}
-function titleFrom(t){return t.length>32?t.slice(0,32)+"â€¦":t;}
-function escHtml(t){return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-function buildApiMessages(messages){
-  return (messages||[]).map(m=>({
-    role:m.role==="ai"?"assistant":m.role,
-    content:m.text||""
-  })).filter(m=>m.content.trim());
-}
-
-// â”€â”€ Status Dot â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function setDot(state,label){dot.className="dot "+state;dotLabel.textContent=label;}
-
-async function pollStatus(){
-  try{
-    const r=await fetch(`${API}/status`,{signal:AbortSignal.timeout(3000)});
-    if(r.ok){
-      const d=await r.json();
-      setDot("green","online");
-      document.getElementById("s-backend").textContent=(API||window.location.origin).replace(/^https?:\/\//,"");
-      document.getElementById("s-uptime").textContent=d.uptime_seconds+"s";
-      const ol=d.ollama;
-      document.getElementById("s-ollama").textContent=ol?"running":"offline";
-      document.getElementById("s-ollama").style.color=ol?"var(--dot-green)":"var(--dot-red)";
-      try{
-        const hr=await fetch(`${API}/health/models`,{signal:AbortSignal.timeout(4000)});
-        if(hr.ok){
-          const hd=await hr.json();
-          const m=hd.models&&hd.models[activeModel];
-          const usable=!!(m&&m.usable);
-          engineHint.textContent=usable?`${activeModel} Â· ollama`:`${activeModel} Â· rule`;
-          engineHint.style.color=usable?"var(--dot-green)":"var(--dot-yellow)";
-        }else{
-          engineHint.textContent=ol?`${activeModel} Â· ollama`:`${activeModel} Â· rule`;
-          engineHint.style.color=ol?"var(--dot-green)":"var(--dot-yellow)";
-        }
-      }catch{
-        engineHint.textContent=ol?`${activeModel} Â· ollama`:`${activeModel} Â· rule`;
-        engineHint.style.color=ol?"var(--dot-green)":"var(--dot-yellow)";
-      }
-    } else setDot("yellow","degraded");
-  } catch{setDot("red","offline");engineHint.textContent="offline";}
-}
-pollStatus();setInterval(pollStatus,7000);
-
-// â”€â”€ Dark / Light Mode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const toggleDark=document.getElementById("toggle-dark");
-function applyTheme(dark){
-  document.body.classList.toggle("light",!dark);
-  toggleDark.checked=dark;
-  localStorage.setItem("genai_dark",dark?"1":"0");
-}
-toggleDark.addEventListener("change",()=>applyTheme(toggleDark.checked));
-const savedDark=localStorage.getItem("genai_dark");
-applyTheme(savedDark===null?true:savedDark==="1");
-
-// â”€â”€ Model Selector â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const modelBtn       = document.getElementById("model-btn");
-const modelDropdown  = document.getElementById("model-dropdown");
-const modelBtnLabel  = document.getElementById("model-btn-label");
-const modelDotColor  = document.getElementById("model-dot-color");
-const settingsModel  = document.getElementById("settings-model");
-const defModelSelect = document.getElementById("default-model-select");
-
-const modelDotClass = {"g0.5-nano":"md-nano","g0.5-mini":"md-mini","g0.5":"md-pro"};
-
-function setModel(mid,{persistDefault=true,syncSession=true}={}){
-  activeModel=mid;
-  modelBtnLabel.textContent=mid;
-  modelDotColor.className="model-dot "+(modelDotClass[mid]||"md-mini");
-  settingsModel.textContent=mid;
-  defModelSelect.value=mid;
-  document.querySelectorAll(".model-option").forEach(el=>{
-    el.classList.toggle("selected",el.dataset.model===mid);
-  });
-  if(persistDefault){
-    localStorage.setItem("genai_default_model",mid);
-  }
-  if(syncSession){
-    const s=getActive();
-    if(s){
-      s.model=mid;
-      save();
-      renderHist();
-      renderManageList();
-    }
-  }
-  modelDropdown.classList.remove("open");
-  engineHint.textContent=mid+" Â· â€¦";
-  pollStatus();
-}
-
-modelBtn.addEventListener("click",e=>{e.stopPropagation();modelDropdown.classList.toggle("open");});
-document.querySelectorAll(".model-option").forEach(el=>{
-  el.addEventListener("click",()=>setModel(el.dataset.model));
-});
-document.addEventListener("click",()=>modelDropdown.classList.remove("open"));
-modelDropdown.addEventListener("click",e=>e.stopPropagation());
-
-defModelSelect.value=activeModel;
-defModelSelect.addEventListener("change",()=>{
-  setModel(defModelSelect.value);
-});
-
-setModel(activeModel);
-
-// â”€â”€ Confirm Dialog â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const confirmOverlay=document.getElementById("confirm-overlay");
-function showConfirm(title,body,cb){
-  document.getElementById("confirm-title").textContent=title;
-  document.getElementById("confirm-body").textContent=body;
-  confirmCb=cb;
-  confirmOverlay.classList.add("open");
-}
-document.getElementById("confirm-cancel").addEventListener("click",()=>confirmOverlay.classList.remove("open"));
-document.getElementById("confirm-ok").addEventListener("click",()=>{confirmOverlay.classList.remove("open");if(confirmCb)confirmCb();});
-confirmOverlay.addEventListener("click",e=>{if(e.target===confirmOverlay)confirmOverlay.classList.remove("open");});
-
-const renameOverlay=document.getElementById("rename-overlay");
-const renameInput=document.getElementById("rename-input");
-function openRenamePopup(sessionId){
-  const s=sessions.find(x=>x.id===sessionId);
-  if(!s)return;
-  renameTarget=sessionId;
-  renameInput.value=s.title||"";
-  renameOverlay.classList.add("open");
-  setTimeout(()=>renameInput.focus(),0);
-}
-function closeRenamePopup(){renameOverlay.classList.remove("open");renameTarget=null;}
-document.getElementById("rename-cancel").addEventListener("click",closeRenamePopup);
-document.getElementById("rename-save").addEventListener("click",()=>{
-  const s=sessions.find(x=>x.id===renameTarget);
-  const title=renameInput.value.trim().slice(0,80);
-  if(!s||!title)return;
-  s.title=title;
-  save();
-  if(activeId===s.id)chatTitle.textContent=s.title;
-  renderHist();
-  renderManageList();
-  closeRenamePopup();
-});
-renameOverlay.addEventListener("click",e=>{if(e.target===renameOverlay)closeRenamePopup();});
-
-const archiveOverlay=document.getElementById("archive-overlay");
-function openArchivePopup(){
-  document.getElementById("archive-body").textContent=`Download ${sessions.length} chat(s) as a JSON archive.`;
-  archiveOverlay.classList.add("open");
-}
-function closeArchivePopup(){archiveOverlay.classList.remove("open");}
-document.getElementById("archive-cancel").addEventListener("click",closeArchivePopup);
-document.getElementById("archive-save").addEventListener("click",()=>{archiveChats();closeArchivePopup();});
-archiveOverlay.addEventListener("click",e=>{if(e.target===archiveOverlay)closeArchivePopup();});
-
-const trashOverlay=document.getElementById("trash-overlay");
-function openTrashPopup(mode,id=null){
-  trashMode={mode,id};
-  const body=document.getElementById("trash-body");
-  body.textContent=mode==="one"?"Delete this chat permanently? This cannot be undone.":"Delete all chats permanently? This cannot be undone.";
-  trashOverlay.classList.add("open");
-}
-function closeTrashPopup(){trashOverlay.classList.remove("open");trashMode=null;}
-document.getElementById("trash-cancel").addEventListener("click",closeTrashPopup);
-document.getElementById("trash-confirm").addEventListener("click",()=>{
-  if(!trashMode)return;
-  if(trashMode.mode==="one"&&trashMode.id){
-    deleteSession(trashMode.id);
-  }else{
-    clearAll();
-    settingsOverlay.classList.remove("open");
-    manageOverlay.classList.remove("open");
-  }
-  closeTrashPopup();
-});
-trashOverlay.addEventListener("click",e=>{if(e.target===trashOverlay)closeTrashPopup();});
-
-// â”€â”€ History Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function renderHist(){
-  histList.innerHTML="";
-  if(!sessions.length){
-    histList.innerHTML=`<div style="font-size:11.5px;color:var(--text-dim);padding:6px 9px;">No chats yet</div>`;
-    return;
-  }
-  [...sessions].reverse().forEach(s=>{
-    const el=document.createElement("div");
-    el.className="hi"+(s.id===activeId?" active":"");
-    el.innerHTML=`<span class="hi-title">${escHtml(s.title)}</span>
-      <button class="hi-del" title="Delete" data-id="${s.id}">
-        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-      </button>`;
-    el.addEventListener("click",e=>{if(e.target.closest(".hi-del"))return;loadSession(s.id);});
-    el.querySelector(".hi-del").addEventListener("click",e=>{
-      e.stopPropagation();
-      openTrashPopup("one",s.id);
-    });
-    histList.appendChild(el);
-  });
-}
-
-// â”€â”€ Session Management â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function newChat(){
-  const id=genId();
-  sessions.push({id,title:"New Chat",model:activeModel,messages:[]});
-  save();activeId=id;
-  renderHist();renderChat();
-  chatTitle.textContent="New Chat";
-}
-
-function loadSession(id){
-  activeId=id;
-  const s=getActive();
-  if(s&&s.model)setModel(s.model,{persistDefault:false,syncSession:false});
-  chatTitle.textContent=s?s.title:"GenAI";
-  renderHist();renderChat();
-}
-
-function deleteSession(id){
-  sessions=sessions.filter(s=>s.id!==id);
-  if(activeId===id)activeId=sessions.length?sessions[sessions.length-1].id:null;
-  save();renderHist();
-  if(activeId)loadSession(activeId);
-  else{renderChat();chatTitle.textContent="GenAI";}
-  renderManageList();
-  updateSettingsCounts();
-}
-
-function clearAll(){
-  sessions=[];activeId=null;save();
-  renderHist();renderManageList();renderChat();
-  chatTitle.textContent="GenAI";
-  updateSettingsCounts();
-}
-
-// â”€â”€ Render Chat â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function renderChat(){
-  chatArea.innerHTML="";
-  const s=getActive();
-  if(!s||!s.messages.length){chatArea.appendChild(emptyState);return;}
-  s.messages.forEach(m=>appendBubble(m.role,m.text,m.engine,m.thinking,false));
-  chatArea.scrollTop=chatArea.scrollHeight;
-}
-
-function appendBubble(role,text,engine,thinking,anim=true){
-  if(emptyState.parentNode===chatArea)chatArea.removeChild(emptyState);
-  const row=document.createElement("div");
-  row.className="msg-row";
-  if(!anim)row.style.animation="none";
-  const isUser=role==="user";
-  const thinkTag=(!isUser&&thinking)?`<span class="thinking-tag">ThinkingMini V0.3</span>`:"";
-  const engBadge=!isUser&&engine?`<div class="eng-badge">${engine==="ollama"?"cloud":"rule"}</div>`:"";
-  row.innerHTML=`
-    <div class="msg-av ${isUser?"user":"ai"}">${isUser?"Y":"G"}</div>
-    <div class="msg-body">
-      <div class="msg-name">${isUser?"You":"GenAI"} ${thinkTag}</div>
-      <div class="msg-text${isUser?" u":""}">${escHtml(text)}</div>
-      ${engBadge}
-    </div>`;
-  chatArea.appendChild(row);
-  chatArea.scrollTop=chatArea.scrollHeight;
-}
-
-function addTyping(){
-  if(emptyState.parentNode===chatArea)chatArea.removeChild(emptyState);
-  const row=document.createElement("div");
-  row.className="msg-row";row.id="typing-row";
-  row.innerHTML=`<div class="msg-av ai">G</div><div class="msg-body"><div class="msg-name">GenAI</div><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
-  chatArea.appendChild(row);chatArea.scrollTop=chatArea.scrollHeight;
-}
-function removeTyping(){const el=document.getElementById("typing-row");if(el)el.remove();}
-
-// â”€â”€ Send â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-async function send(){
-  const text=promptInput.value.trim();
-  if(!text)return;
-  if(!activeId)newChat();
-  const s=getActive();
-  promptInput.value="";autoResize();
-  sendBtn.disabled=true;setDot("yellow","thinkingâ€¦");
-
-  s.messages.push({role:"user",text});
-  if(s.title==="New Chat"||!s.title){s.title=titleFrom(text);chatTitle.textContent=s.title;}
-  s.model=activeModel;
-  save();renderHist();
-  appendBubble("user",text);
-  addTyping();
-
-  try{
-    const res=await fetch(`${API}/chat`,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        prompt:text,
-        model:activeModel,
-        messages:buildApiMessages(s.messages)
-      }),
-      signal:AbortSignal.timeout(90000)
-    });
-    removeTyping();
-    if(!res.ok)throw new Error("Server "+res.status);
-    const d=await res.json();
-    s.messages.push({role:"ai",text:d.response,engine:d.engine||"rule",thinking:!!d.thinking});
-    save();
-    appendBubble("ai",d.response,d.engine||"rule",!!d.thinking);
-    setDot("green","online");
-  } catch(err){
-    removeTyping();
-    appendBubble("ai","Connection failed â€” is server.py running?","error",false);
-    setDot("red","offline");
-  }
-  sendBtn.disabled=false;promptInput.focus();
-}
-
-function fillPrompt(t){promptInput.value=t;autoResize();promptInput.focus();send();}
-window.fillPrompt=fillPrompt;
-
-function autoResize(){promptInput.style.height="auto";promptInput.style.height=Math.min(promptInput.scrollHeight,140)+"px";}
-promptInput.addEventListener("input",autoResize);
-promptInput.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}});
-sendBtn.addEventListener("click",send);
-
-// â”€â”€ New Chat â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-document.getElementById("btn-new").addEventListener("click",newChat);
-
-// â”€â”€ Archive â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function archiveChats(){
-  if(!sessions.length){alert("No chat history to archive.");return;}
-  const data=JSON.stringify({exported:new Date().toISOString(),sessions},null,2);
-  const blob=new Blob([data],{type:"application/json"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url;a.download=`genai-history-${Date.now()}.json`;
-  document.body.appendChild(a);a.click();
-  document.body.removeChild(a);URL.revokeObjectURL(url);
-}
-
-// â”€â”€ Settings â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-function updateSettingsCounts(){
-  document.getElementById("s-chats").textContent=sessions.length+" chat"+(sessions.length!==1?"s":"");
-  settingsModel.textContent=activeModel;
-}
-
-const settingsOverlay=document.getElementById("settings-overlay");
-document.getElementById("btn-settings").addEventListener("click",()=>{
-  pollStatus();updateSettingsCounts();
-  settingsOverlay.classList.add("open");
-});
-document.getElementById("settings-x").addEventListener("click",()=>settingsOverlay.classList.remove("open"));
-document.getElementById("settings-close-btn").addEventListener("click",()=>settingsOverlay.classList.remove("open"));
-settingsOverlay.addEventListener("click",e=>{if(e.target===settingsOverlay)settingsOverlay.classList.remove("open");});
-
-document.getElementById("btn-edit-active").addEventListener("click",()=>{
-  if(!activeId){alert("No active chat selected.");return;}
-  openRenamePopup(activeId);
-});
-document.getElementById("btn-archive").addEventListener("click",openArchivePopup);
-document.getElementById("btn-clear-settings").addEventListener("click",()=>openTrashPopup("all"));
-
-// â”€â”€ Manage History â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const manageOverlay=document.getElementById("manage-overlay");
-const manageList=document.getElementById("manage-list");
-
-function renderManageList(){
-  manageList.innerHTML="";
-  if(!sessions.length){manageList.innerHTML=`<div style="font-size:12.5px;color:var(--text-dim);padding:6px 4px;">No chat history.</div>`;return;}
-  [...sessions].reverse().forEach(s=>{
-    const el=document.createElement("div");el.className="mi";
-    el.innerHTML=`<span class="mi-title">${escHtml(s.title)}</span>
-      <span class="mi-model">${s.model||"g0.5-mini"}</span>
-      <div class="mi-actions">
-        <button class="icon-btn edit" title="Rename chat" data-action="edit">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
-        </button>
-        <button class="icon-btn archive" title="Archive all chats" data-action="archive">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8h14v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M10 12h4"/></svg>
-        </button>
-        <button class="icon-btn trash" title="Delete chat" data-action="trash">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-        </button>
-      </div>`;
-    el.querySelector('[data-action="edit"]').addEventListener("click",()=>openRenamePopup(s.id));
-    el.querySelector('[data-action="archive"]').addEventListener("click",openArchivePopup);
-    el.querySelector('[data-action="trash"]').addEventListener("click",()=>openTrashPopup("one",s.id));
-    manageList.appendChild(el);
-  });
-}
-
-document.getElementById("btn-manage").addEventListener("click",()=>{renderManageList();manageOverlay.classList.add("open");});
-document.getElementById("manage-x").addEventListener("click",()=>manageOverlay.classList.remove("open"));
-document.getElementById("manage-done").addEventListener("click",()=>manageOverlay.classList.remove("open"));
-manageOverlay.addEventListener("click",e=>{if(e.target===manageOverlay)manageOverlay.classList.remove("open");});
-document.getElementById("manage-clear-all").addEventListener("click",()=>openTrashPopup("all"));
-
-// â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-renderHist();
-if(sessions.length){loadSession(sessions[sessions.length-1].id);}
-else{chatArea.appendChild(emptyState);}
-</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-analytics-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
-
-
 
